@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<otobo_config version="2.0" init="Application">
+    <Setting Name="Elasticsearch::IndexSettings###FAQ" Required="0" Valid="0">
+        <Description Translatable="1">Number of shards (NS), replicas (NR) and fields limit for the index 'faq'.</Description>
+        <Navigation>Core::Elasticsearch::Settings</Navigation>
+        <Value>
+            <Hash>
+                <Item Key="NS">1</Item>
+                <Item Key="NR">0</Item>
+           </Hash>
+        </Value>
+    </Setting>
+    <Setting Name="Elasticsearch::FAQStoreFields" Required="0" Valid="0" ConfigLevel="100">
+        <Description Translatable="1">Fields stored in the faq index which are used for other things besides fulltext searches. For the complete functionality all fields are mandatory.</Description>
+        <Navigation>Core::Elasticsearch::Settings</Navigation>
+        <Value>
+            <Hash>
+                <Item Key="Basic">
+                    <Array>
+                        <Item>ItemID</Item>
+                        <Item>CategoryID</Item>
+                    </Array>
+                </Item>
+                <Item Key="DynamicField">
+                    <Array>
+                    </Array>
+                </Item>
+            </Hash>
+        </Value>
+    </Setting>
+    <Setting Name="Elasticsearch::FAQSearchFields" Required="0" Valid="0">
+        <Description Translatable="1">Fields of the faq index, used for the fulltext search. Fields are also stored, but are not mandatory for the overall functionality. Inclusion of attachments can be disabled by setting the entry to 0 or deleting it.</Description>
+        <Navigation>Core::Elasticsearch::Settings</Navigation>
+        <Value>
+            <Hash>
+                <Item Key="Basic">
+                    <Array>
+                        <Item>ItemID</Item>
+                        <Item>CategoryID</Item>
+                    </Array>
+                </Item>
+                <Item Key="DynamicField">
+                    <Array>
+                    </Array>
+                </Item>
+                <Item Key="Attachments">1</Item>
+            </Hash>
+        </Value>
+    </Setting>
+    <Setting Name="GenericInterface::Invoker::Module###Elasticsearch::FAQManagement" Required="0" Valid="1">
+        <Description Translatable="1">GenericInterface module registration for the invoker layer.</Description>
+        <Navigation>GenericInterface::Invoker::ModuleRegistration</Navigation>
+        <Value>
+            <Hash>
+                <Item Key="Name">FAQManagement</Item>
+                <Item Key="Controller">FAQManagement</Item>
+                <Item Key="ConfigDialog">AdminGenericInterfaceInvokerDefault</Item>
+            </Hash>
+        </Value>
+    </Setting>
+    <Setting Name="Events###FAQ" Required="0" Valid="1">
+        <Description Translatable="1">List of all Package events to be displayed in the GUI.</Description>
+        <Navigation>Frontend::Admin</Navigation>
+        <Value>
+            <Array>
+                <Item>FAQCreate</Item>
+                <Item>FAQUpdate</Item>
+                <Item>FAQDelete</Item>
+            </Array>
+        </Value>
+    </Setting>
+</otobo_config>
