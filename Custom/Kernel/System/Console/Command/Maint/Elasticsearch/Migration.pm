@@ -57,7 +57,7 @@ sub Configure {
     $Self->AddOption(
         Name        => 'target',
         Description =>
-            "Specify which objects will be migrated. t: Tickets; u: CustomerUsers; c: CustomerCompanies; i: ITSMConfigItems; If not specified, 'tuci' (all four) will be handled.",
+            "Specify which objects will be migrated. t: Tickets; u: CustomerUsers; c: CustomerCompanies; i: ITSMConfigItems; f: FAQs;If not specified, 'tucif' (all five) will be handled.",
         Required   => 0,
         HasValue   => 1,
         ValueRegex => qr/^[tucif]+$/smx,
@@ -769,10 +769,10 @@ sub MigrateFAQs {
     );
 
     if ($Success) {
-        $Self->Print("<green>ConfigItem index created.</green>\n");
+        $Self->Print("<green>FAQ index created.</green>\n");
     }
     else {
-        $Self->Print("<red>ConfigItem index could not be created!</red>\n");
+        $Self->Print("<red>FAQ index could not be created!</red>\n");
 
         return 0;
     }

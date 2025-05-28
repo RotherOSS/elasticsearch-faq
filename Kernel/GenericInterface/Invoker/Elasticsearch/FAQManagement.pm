@@ -85,6 +85,8 @@ This will just return the data that was passed to the function.
 
 =cut
 
+use Data::Dumper;
+
 sub PrepareRequest {
     my ( $Self, %Param ) = @_;
 
@@ -324,7 +326,7 @@ sub PrepareRequest {
         };
     }
 
-    # ignore events other than ConfigItemCreate or ConfigItemUpdate
+    # ignore events other than FAQCreate or FAQUpdate
     if ( $Param{Data}{Event} !~ /FAQCreate|FAQUpdate/ ) {
         return {
             Success           => 1,
@@ -357,13 +359,15 @@ sub PrepareRequest {
         }
     }
 
+    #print STDERR Dumper \%Param;
+    #print STDERR Dumper $Self;
     # prepare request
     my %Content;
     my $GetDynamicFields = ( IsArrayRefWithData( $Search->{DynamicField} ) || IsArrayRefWithData( $Store->{DynamicField} ) ) ? 1 : 0;
     my %FAQ              = $FAQObject->FAQGet(
         ItemID        => $Param{Data}{ItemID},
         DynamicFields => 1,
-        UserID        => 1,                      # IS IT SAFE?
+        UserID        => 1, # IS IT SAFE?
     );
 
     # iterate over dynamic fields and replace value with DisplayValueRender result
