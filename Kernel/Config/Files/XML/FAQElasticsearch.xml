@@ -82,4 +82,25 @@
             </Hash>
         </Value>
     </Setting>
+    <Setting Name="Elasticsearch::QuickSearchShow###FAQ" Required="0" Valid="0">
+        <Description Translatable="1">Objects to search for, how many entries and which attributs to show. FAQ attributes have to explicitly be stored via Elasticsearch.</Description>
+        <Navigation>Core::Elasticsearch::Settings</Navigation>
+        <Value>
+            <Hash>
+                <Item Key="Count">5</Item>
+                <Item Key="Attributes">
+                    <Array>
+                        <Item>Number</Item>
+                        <Item>Title</Item>
+                    </Array>
+                </Item>
+                <Item Key="AttributeHeader">
+                    <Hash>
+                        <Item Key="Number">Number</Item>
+                        <Item Key="Title">Title</Item>
+                    </Hash>
+                </Item>
+            </Hash>
+        </Value>
+    </Setting>
 </otobo_config>

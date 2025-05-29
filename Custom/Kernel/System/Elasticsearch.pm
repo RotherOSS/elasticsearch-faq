@@ -923,32 +923,6 @@ sub ConfigItemCreate {
 
 }
 
-=head2 TestConnection()
-
-Test the connection to the Elasticsearch server.
-
-    my $Success = $ESObject->TestConnection();
-
-=cut
-
-sub TestConnection {
-    my ( $Self, %Param ) = @_;
-
-    my %DummyIndex = (
-        index => '',
-    );
-    my $Result = $Kernel::OM->Get('Kernel::GenericInterface::Requester')->Run(
-        WebserviceID => $Self->{WebserviceID},
-        Invoker      => 'Utils_GET',
-        Asynchronous => 0,
-        Data         => {
-            IndexName => \%DummyIndex,
-        }
-    );
-
-    return $Result->{Success};
-}
-
 =head2 FAQCreate()
 
 Explicitly creates a FAQ in the Elasticsearch database. Happens mostly event based in a productive system.
@@ -1021,6 +995,104 @@ sub FAQCreate {
 #    }
 
     return 1;
+
+}
+
+=head2 FAQSearch()
+
+Performs a FAQ search via Elasticsearch.
+
+    $ESObject->FAQSearch(
+        Fulltext => $String,
+        Limit    => 20,     # optional
+        Result   => ARRAY,  # optional, ARRAY (default) | FULL
+
+    );
+
+=cut
+
+sub FAQSearch {
+    my ( $Self, %Param ) = @_;
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $ResultType   = $Param{Result} || 'ARRAY';
+    my $Limit        = $Param{Limit}  || 10000;
+
+    # check required params
+    for my $Needed (qw/UserID Fulltext/) {
+        if ( !$Param{$Needed} ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $Needed!",
+            );
+            return;
+        }
+    }
+
+    my ( @Musts, @Filters );
+
+    if ( defined $Param{Fulltext} ) {
+
+        my $FulltextFields = $ConfigObject->Get('Elasticsearch::FAQSearchFields') // {};
+        my @SearchFields   = (
+            @{ $FulltextFields->{Basic} // [] },
+        );
+
+        if ( $FulltextFields->{Attachments} ) {
+            push @SearchFields, ( 'Attachments.Content', 'Attachments.Filename' );
+        }
+
+        # handle dynamic fields
+        if ( $FulltextFields->{DynamicField} ) {
+            my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
+
+            DYNAMICFIELD:
+            for my $DynamicFieldName ( @{ $FulltextFields->{DynamicField} } ) {
+                my $DynamicField = $DynamicFieldObject->DynamicFieldGet(
+                    Name => $DynamicFieldName,
+                );
+                next DYNAMICFIELD unless IsHashRefWithData($DynamicField);
+
+                # add all faq dynamic fields
+                if ( $DynamicField->{ObjectType} eq 'FAQ' ) {
+                    push @SearchFields, "DynamicField_$DynamicFieldName";
+                }
+            }
+        }
+
+        push @Musts, {
+            query_string => {
+                fields => \@SearchFields,
+                query  => "*$Param{Fulltext}*",
+            },
+        };
+    }
+
+    # define the return type
+    my $Return = ( $ResultType eq 'FULL' ) ? '' : 'FAQItemID';
+
+    my $Result = $Kernel::OM->Get('Kernel::GenericInterface::Requester')->Run(
+        WebserviceID => $Self->{WebserviceID},
+        Invoker      => 'Search',
+        Asynchronous => 0,
+        Data         => {
+            IndexName => 'faq',
+            Must      => \@Musts,
+            Filter    => \@Filters,
+            Limit     => $Limit,
+            Return    => $Return,
+        }
+    );
+
+    if ( $ResultType eq 'FULL' ) {
+        return (
+            map {
+                { $_->{ItemID} => $_ }
+            } @{ $Result->{Data} }
+        );
+    }
+    else {
+        return ( map { $_->{ItemID} } @{ $Result->{Data} } );
+    }
 
 }
 
