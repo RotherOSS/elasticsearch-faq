@@ -188,6 +188,7 @@ sub Run {
             Config   => $ConfigIndexSettings->{FAQ}   // $Config,
             Template => $IndexTemplates->{ConfigItem} // $IndexTemplates->{Default},
             Sleep    => $MicroSleep,
+            UserID   => 1,
         );
     }
 
@@ -798,7 +799,12 @@ sub MigrateFAQs {
         $Count++;
 
         # create the config item in Elasticsearch
-        if ( !$Param{ESObject}->FAQCreate( ItemID => $ItemID ) ) {
+        if ( !$Param{ESObject}->FAQCreate(
+                    ItemID => $ItemID,
+                    UserID => 1,
+                )
+           )
+        {
             $Errors++;
         }
 

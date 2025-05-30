@@ -85,8 +85,6 @@ This will just return the data that was passed to the function.
 
 =cut
 
-use Data::Dumper;
-
 sub PrepareRequest {
     my ( $Self, %Param ) = @_;
 
@@ -234,7 +232,7 @@ sub PrepareRequest {
             },
         );
 
-        # prepare processed data to be appended to the attachment array of the CI
+        # prepare processed data to be appended to the attachment array of the FAQ
         my @AttachmentArray;
         for my $AttachmentAttr ( @{ $Result->{Data}{_source}{Attachments} } ) {
             my %Attachment = (
@@ -270,7 +268,7 @@ sub PrepareRequest {
             Success => 1,
             Data    => {
                 docapi => '_update',
-                id     => $Param{Data}{ConfigItemID},
+                id     => $Param{Data}{ItemID},
                 %Content,
             }
         };
@@ -359,15 +357,13 @@ sub PrepareRequest {
         }
     }
 
-    #print STDERR Dumper \%Param;
-    #print STDERR Dumper $Self;
     # prepare request
     my %Content;
     my $GetDynamicFields = ( IsArrayRefWithData( $Search->{DynamicField} ) || IsArrayRefWithData( $Store->{DynamicField} ) ) ? 1 : 0;
     my %FAQ              = $FAQObject->FAQGet(
         ItemID        => $Param{Data}{ItemID},
         DynamicFields => 1,
-        UserID        => 1, # IS IT SAFE?
+        UserID        => 1 # IMPORTANT TODO!! - Likely NOT SAFE, should use $Param{UserID} instead, but for now that is not being properly passed through
     );
 
     # iterate over dynamic fields and replace value with DisplayValueRender result

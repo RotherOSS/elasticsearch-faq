@@ -1057,6 +1057,18 @@ sub AttachmentAdd {
         $AttachmentID = $Row[0];
     }
 
+    # trigger AttachmentAdd-Event
+    $Self->EventHandler(
+        Event => 'AttachmentAddPost',
+        Data  => {
+            %Param,
+            ItemID => $Param{ItemID},
+            Comment      => $Param{Filename},
+            HistoryType  => 'AttachmentAdd',
+        },
+        UserID => $Param{UserID},
+    );
+
     return $AttachmentID;
 }
 

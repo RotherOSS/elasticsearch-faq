@@ -68,6 +68,8 @@
                 <Item>FAQCreate</Item>
                 <Item>FAQUpdate</Item>
                 <Item>FAQDelete</Item>
+                <Item>AttachmentAddPost</Item>
+                <Item>AttachmentDeletePost</Item>
             </Array>
         </Value>
     </Setting>
@@ -78,7 +80,7 @@
             <Hash>
                 <Item Key="Module">Kernel::GenericInterface::Event::Handler</Item>
                 <Item Key="Transaction">1</Item>
-                <Item Key="Event">(FAQCreate|FAQUpdate|FAQDelete)</Item>
+                <Item Key="Event">(FAQCreate|FAQUpdate|FAQDelete|AttachmentAddPost|AttachmentDeletePost)</Item>
             </Hash>
         </Value>
     </Setting>

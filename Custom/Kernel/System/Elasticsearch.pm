@@ -955,44 +955,47 @@ sub FAQCreate {
         Invoker      => 'FAQManagement',
         Asynchronous => 0,
         Data         => {
-            Event        => 'FAQCreate',
+            Event  => 'FAQCreate',
             ItemID => $Param{ItemID},
+            UserID => $Param{UserID},
         }
     );
 
     return if !$Result->{Success};
 
-#    # update the attachments
-#    if (
-#        $ConfigObject->Get('Elasticsearch::ConfigItemSearchFields')
-#        &&
-#        $ConfigObject->Get('Elasticsearch::ConfigItemSearchFields')->{'Attachments'}
-#        )
-#    {
-#        my $ConfigItemObject = $Kernel::OM->Get('Kernel::System::ITSMConfigItem');
-#
-#        my @Attachments = $ConfigItemObject->ConfigItemAttachmentList(
-#            ConfigItemID => $Param{ConfigItemID},
-#        );
-#
-#        for my $AttachmentName (@Attachments) {
-#            my $Attachment = $ConfigItemObject->ConfigItemAttachmentGet(
-#                ConfigItemID => $Param{ConfigItemID},
-#                Filename     => $AttachmentName,
-#            );
-#
-#            $Result = $RequesterObject->Run(
-#                WebserviceID => $Self->{WebserviceID},
-#                Invoker      => 'ConfigItemManagement',
-#                Asynchronous => 0,
-#                Data         => {
-#                    %{$Attachment},
-#                    Event        => 'AttachmentAddPost',
-#                    ConfigItemID => $Param{ConfigItemID},
-#                }
-#            );
-#        }
-#    }
+    # update the attachments
+    if (
+        $ConfigObject->Get('Elasticsearch::ConfigItemSearchFields')
+        &&
+        $ConfigObject->Get('Elasticsearch::ConfigItemSearchFields')->{'Attachments'}
+        )
+    {
+        my $FAQObject = $Kernel::OM->Get('Kernel::System::FAQ');
+
+        my @AttachmentIndex = $FAQObject->AttachmentIndex(
+            ItemID => $Param{ItemID},
+            UserID => $Param{UserID}
+        );
+
+        for my $AttachmentEntry (@AttachmentIndex) {
+            my %Attachment = $FAQObject->AttachmentGet(
+                ItemID => $Param{ItemID},
+                FileID => $AttachmentEntry->{FileID},
+                UserID => $Param{UserID},
+            );
+
+            $Result = $RequesterObject->Run(
+                WebserviceID => $Self->{WebserviceID},
+                Invoker      => 'FAQManagement',
+                Asynchronous => 0,
+                Data         => {
+                    %Attachment,
+                    Event  => 'AttachmentAddPost',
+                    ItemID => $Param{ItemID},
+                }
+            );
+        }
+    }
 
     return 1;
 
