@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<otobo_package version="1.0">
+    <Name>Elasticsearch-FAQ</Name>
+    <Version>0.0.0</Version>
+    <Framework>11.0.x</Framework>
+    <PackageRequired Version="11.0.1">FAQ</PackageRequired>
+    <Vendor>Rother OSS GmbH</Vendor>
+    <URL>https://otobo.de/</URL>
+    <License>GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</License>
+    <Description Lang="en">The OTOBO FAQ Package enhanced with Elasticsearch.</Description>
+    <Filelist>    
+        <File Permission="660" Location="Custom/Kernel/Modules/AgentElasticsearchQuickResult.pm" />
+        <File Permission="660" Location="Custom/Kernel/Output/HTML/Templates/Standard/AgentElasticsearchQuickResult.tt" />
+        <File Permission="660" Location="Custom/Kernel/System/Console/Command/Maint/Elasticsearch/Migration.pm" />
+        <File Permission="660" Location="Custom/Kernel/System/Elasticsearch.pm" />
+        <File Permission="660" Location="Custom/Kernel/System/FAQ.pm" />
+        <File Permission="660" Location="Kernel/Config/Files/XML/FAQElasticsearch.xml" />        
+        <File Permission="660" Location="Kernel/GenericInterface/Invoker/Elasticsearch/FAQManagement.pm" />        
+    </Filelist>
+    <IntroInstall Type="post" Title="Convert legacy reference fields" Lang="en"><![CDATA[
+
+        <br/>
+        If you are using Elasticsearch, please execute the console command "Maint::Elasticsearch::Migration --target f"<br/>
+
+    ]]></IntroInstall>
+</otobo_package>
