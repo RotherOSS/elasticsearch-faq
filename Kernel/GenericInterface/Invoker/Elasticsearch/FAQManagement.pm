@@ -279,7 +279,7 @@ sub PrepareRequest {
 
         # set parameters
         my %Request = (
-            id => $Param{Data}{ConfigItemID},
+            id => $Param{Data}{ItemID},
         );
         my %API = (
             docapi => '_doc',
@@ -300,7 +300,7 @@ sub PrepareRequest {
             },
         );
 
-        # prepare processed data to be appended to the attachment array of the CI
+        # prepare processed data to be appended to the attachment array of the FAQ
         my @AttachmentArray = ();
         for my $Attachment ( @{ $Result->{Data}{_source}{Attachments} } ) {
 
@@ -318,7 +318,7 @@ sub PrepareRequest {
             Success => 1,
             Data    => {
                 docapi => '_update',
-                id     => $Param{Data}{ConfigItemID},
+                id     => $Param{Data}{ItemID},
                 doc    => \%Content,
             }
         };

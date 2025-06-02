@@ -1171,6 +1171,24 @@ sub AttachmentDelete {
         Bind => [ \$Param{FileID}, \$Param{ItemID} ],
     );
 
+    # trigger AttachmentDeletePost-Event
+    my %Attachment = $Self->AttachmentGet(
+        ItemID => $Param{ItemID},
+        FileID => $Param{FileID},
+        UserID => $Param{UserID},
+    );
+
+    $Self->EventHandler(
+        Event => 'AttachmentDeletePost',
+        Data  => {
+            %Param,
+            ItemID => $Param{ItemID},
+            Comment      => $Attachment{Filename},
+            HistoryType  => 'AttachmentDelete',
+        },
+        UserID => $Param{UserID},
+    );
+
     return 1;
 }
 
