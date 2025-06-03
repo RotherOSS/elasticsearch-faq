@@ -37,8 +37,11 @@
             <Hash>
                 <Item Key="Basic">
                     <Array>
-                        <Item>ItemID</Item>
-                        <Item>CategoryID</Item>
+                        <Item>Field1</Item>
+                        <Item>Field2</Item>
+                        <Item>Field3</Item>
+                        <Item>Title</Item>
+                        <Item>Keywords</Item>
                     </Array>
                 </Item>
                 <Item Key="DynamicField">

@@ -363,7 +363,7 @@ sub PrepareRequest {
     my %FAQ              = $FAQObject->FAQGet(
         ItemID        => $Param{Data}{ItemID},
         DynamicFields => 1,
-        UserID        => 1 # IMPORTANT TODO!! - Likely NOT SAFE, should use $Param{UserID} instead, but for now that is not being properly passed through
+        UserID        => 1
     );
 
     # iterate over dynamic fields and replace value with DisplayValueRender result

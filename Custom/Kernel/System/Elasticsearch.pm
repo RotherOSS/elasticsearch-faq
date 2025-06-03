@@ -1031,7 +1031,43 @@ sub FAQSearch {
         }
     }
 
+    # set up category filter corresponding to the access rights
+    my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
+    my %AuthGroupsList = $GroupObject->PermissionUserGroupGet(
+        UserID => $Param{UserID},
+        Type   => "ro",
+    );
+    my %AuthGroupsMap = map { $_ => 1 } keys %AuthGroupsList;
+
+    my $FAQObject = $Kernel::OM->Get('Kernel::System::FAQ');
+    my $AllCategoryGroups = $FAQObject->CategoryGroupGetAll(
+        UserID => $Param{UserID},
+    );
+
+    my @AuthCategoryList;
+    CATEGORY:
+    for my $CategoryID (keys $AllCategoryGroups->%*) {
+        for my $GroupID (keys $AllCategoryGroups->{$CategoryID}->%*) {
+            if ($AuthGroupsMap{$GroupID}) {
+                push @AuthCategoryList, $CategoryID;
+                next CATEGORY;  # It suffices that one user group is authorized into the category
+            }
+        }
+    }
+
     my ( @Musts, @Filters );
+
+    push @Filters, {
+        bool => {
+            filter => [
+                {
+                    terms => {
+                        CategoryID => \@AuthCategoryList,
+                    }
+                },
+            ]
+        }
+    };
 
     if ( defined $Param{Fulltext} ) {
 
