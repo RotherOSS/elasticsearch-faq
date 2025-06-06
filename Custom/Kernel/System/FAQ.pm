@@ -876,7 +876,7 @@ sub FAQUpdate {
         Event => 'FAQUpdate',
         Data  => {
             ItemID  => $Param{ItemID},
-            Comment => $Param{ItemID} . '%%' . $Param{Number},
+            Comment => $Param{ItemID} . '%%' . $Param{Title}, # TODO: To be replaced by Number, need to find out why Number is undef
         },
         UserID => $Param{UserID},
     );
@@ -1057,9 +1057,9 @@ sub AttachmentAdd {
         $AttachmentID = $Row[0];
     }
 
-    # trigger AttachmentAdd-Event
+    # trigger FAQAttachmentAddPost-Event
     $Self->EventHandler(
-        Event => 'AttachmentAddPost',
+        Event => 'FAQAttachmentAddPost',
         Data  => {
             %Param,
             ItemID => $Param{ItemID},
@@ -1171,7 +1171,7 @@ sub AttachmentDelete {
         Bind => [ \$Param{FileID}, \$Param{ItemID} ],
     );
 
-    # trigger AttachmentDeletePost-Event
+    # trigger FAQAttachmentDeletePost-Event
     my %Attachment = $Self->AttachmentGet(
         ItemID => $Param{ItemID},
         FileID => $Param{FileID},
@@ -1179,7 +1179,7 @@ sub AttachmentDelete {
     );
 
     $Self->EventHandler(
-        Event => 'AttachmentDeletePost',
+        Event => 'FAQAttachmentDeletePost',
         Data  => {
             %Param,
             ItemID => $Param{ItemID},

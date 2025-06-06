@@ -779,8 +779,8 @@ sub MigrateFAQs {
     }
 
     # return if no StoreFields are defined
-    if ( !$Kernel::OM->Get('Kernel::Config')->Get('Elasticsearch::ConfigItemStoreFields') ) {
-        $Self->Print("<yellow>No ConfigItemStoreFields are defined.</yellow>\n");
+    if ( !$Kernel::OM->Get('Kernel::Config')->Get('Elasticsearch::FAQStoreFields') ) {
+        $Self->Print("<yellow>No FAQStoreFields are defined.</yellow>\n");
 
         return 1;
     }
@@ -798,7 +798,7 @@ sub MigrateFAQs {
 
         $Count++;
 
-        # create the config item in Elasticsearch
+        # create the FAQ in Elasticsearch
         if ( !$Param{ESObject}->FAQCreate(
                     ItemID => $ItemID,
                     UserID => 1,

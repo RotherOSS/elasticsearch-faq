@@ -965,9 +965,9 @@ sub FAQCreate {
 
     # update the attachments
     if (
-        $ConfigObject->Get('Elasticsearch::ConfigItemSearchFields')
+        $ConfigObject->Get('Elasticsearch::FAQSearchFields')
         &&
-        $ConfigObject->Get('Elasticsearch::ConfigItemSearchFields')->{'Attachments'}
+        $ConfigObject->Get('Elasticsearch::FAQSearchFields')->{'Attachments'}
         )
     {
         my $FAQObject = $Kernel::OM->Get('Kernel::System::FAQ');
@@ -990,7 +990,7 @@ sub FAQCreate {
                 Asynchronous => 0,
                 Data         => {
                     %Attachment,
-                    Event  => 'AttachmentAddPost',
+                    Event  => 'FAQAttachmentAddPost',
                     ItemID => $Param{ItemID},
                 }
             );
