@@ -187,7 +187,7 @@ sub PrepareRequest {
     my $FAQObject = $Kernel::OM->Get('Kernel::System::FAQ');
 
     # attachment management
-    if ( $Param{Data}{Event} eq 'AttachmentAddPost' ) {
+    if ( $Param{Data}{Event} eq 'FAQAttachmentAddPost' ) {
         my $RequesterObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
 
         # create a temporary index to "ingest" the attachment
@@ -274,7 +274,7 @@ sub PrepareRequest {
         };
     }
 
-    if ( $Param{Data}{Event} eq 'AttachmentDeletePost' ) {
+    if ( $Param{Data}{Event} eq 'FAQAttachmentDeletePost' ) {
         my $RequesterObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
 
         # set parameters
@@ -387,9 +387,44 @@ sub PrepareRequest {
     %Content = (
         ( map { $_ => $FAQ{$_} } keys %DataToStore ),
     );
-    $Content{Attachments} = [];
+
+    my @AttachmentIndex = $FAQObject->AttachmentIndex(
+        ItemID => $Param{Data}{ItemID},
+        UserID => 1
+    );
+    my @Attachments;
+    for my $AttachmentEntry (@AttachmentIndex) {
+        my %Attachment = $FAQObject->AttachmentGet(
+            ItemID => $Param{Data}{ItemID},
+            FileID => $AttachmentEntry->{FileID},
+            UserID => 1,
+        );
+
+        # create a temporary index to "ingest" the attachment
+        my $RequesterObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
+        my $Result = $RequesterObject->Run(
+            WebserviceID => $Self->{WebserviceID},
+            Invoker      => 'FAQIngestAttachment',
+            Asynchronous => 0,
+            Data         => {
+                ItemID => $Param{Data}{ItemID},
+                Filename    => $Attachment{Filename},
+                ContentType => $Attachment{ContentType},
+                Filesize    => $Attachment{Filesize},
+                Event => 'PutTMPAttachment',
+            },
+        );
+        if ($Result && $Result->{Data}) {
+            push @Attachments, {
+                Content => $Attachment{Content},
+                Filename => $Attachment{Filename},
+            };
+        }
+    }
+    $Content{Attachments} = \@Attachments;
 
     if ( $API eq '_update' ) {
+
         return {
             Success => 1,
             Data    => {
@@ -400,6 +435,7 @@ sub PrepareRequest {
         };
     }
     else {
+
         return {
             Success => 1,
             Data    => {

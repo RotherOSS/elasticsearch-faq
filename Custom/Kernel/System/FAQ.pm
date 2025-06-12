@@ -1057,17 +1057,8 @@ sub AttachmentAdd {
         $AttachmentID = $Row[0];
     }
 
-    # trigger FAQAttachmentAddPost-Event
-    $Self->EventHandler(
-        Event => 'FAQAttachmentAddPost',
-        Data  => {
-            %Param,
-            ItemID => $Param{ItemID},
-            Comment      => $Param{Filename},
-            HistoryType  => 'AttachmentAdd',
-        },
-        UserID => $Param{UserID},
-    );
+    # the FAQAttachmentAddPost-Event should not be triggered
+    # instead, the FAQUpdate event reloads the attachments to the ES
 
     return $AttachmentID;
 }
