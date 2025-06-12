@@ -1033,7 +1033,7 @@ sub FAQSearch {
 
     # set up category filter corresponding to the access rights
     my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
-    my %AuthGroupsList = $GroupObject->PermissionUserGroupGet(
+    my %AuthGroupsList = $GroupObject->PermissionUserGet(
         UserID => $Param{UserID},
         Type   => "ro",
     );

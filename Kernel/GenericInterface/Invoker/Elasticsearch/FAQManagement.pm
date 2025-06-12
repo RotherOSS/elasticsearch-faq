@@ -363,8 +363,17 @@ sub PrepareRequest {
     my %FAQ              = $FAQObject->FAQGet(
         ItemID        => $Param{Data}{ItemID},
         DynamicFields => 1,
+        ItemFields    => 1,
         UserID        => 1
     );
+
+    ITEMFIELD:
+    for my $ItemField (qw(Field1 Field2 Field3 Field4 Field5 Field6)) {
+        next ITEMFIELD if !$FAQ{$ItemField};
+        $FAQ{$ItemField} = $Kernel::OM->Get('Kernel::System::HTMLUtils')->ToAscii( 
+            String => $FAQ{$ItemField},
+        );
+    }
 
     # iterate over dynamic fields and replace value with DisplayValueRender result
     if ($GetDynamicFields) {
