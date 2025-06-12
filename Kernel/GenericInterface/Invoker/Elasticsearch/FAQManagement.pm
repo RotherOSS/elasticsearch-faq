@@ -409,6 +409,7 @@ sub PrepareRequest {
             UserID => 1,
         );
 
+        # enforce file requirements (size, format, etc.)
         # create a temporary index to "ingest" the attachment
         my $RequesterObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
         my $Result = $RequesterObject->Run(
@@ -419,6 +420,7 @@ sub PrepareRequest {
                 ItemID => $Param{Data}{ItemID},
                 Filename    => $Attachment{Filename},
                 ContentType => $Attachment{ContentType},
+                Content     => $Attachment{Content},
                 Filesize    => $Attachment{Filesize},
                 Event => 'PutTMPAttachment',
             },

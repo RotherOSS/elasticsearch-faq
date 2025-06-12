@@ -1157,24 +1157,26 @@ sub AttachmentDelete {
         }
     }
 
-    return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
-        SQL  => 'DELETE FROM faq_attachment WHERE id = ? AND faq_id = ? ',
-        Bind => [ \$Param{FileID}, \$Param{ItemID} ],
-    );
-
-    # trigger FAQAttachmentDeletePost-Event
     my %Attachment = $Self->AttachmentGet(
         ItemID => $Param{ItemID},
         FileID => $Param{FileID},
         UserID => $Param{UserID},
     );
 
+    return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
+        SQL  => 'DELETE FROM faq_attachment WHERE id = ? AND faq_id = ? ',
+        Bind => [ \$Param{FileID}, \$Param{ItemID} ],
+    );
+
+    # trigger FAQAttachmentDeletePost-Event
     $Self->EventHandler(
         Event => 'FAQAttachmentDeletePost',
         Data  => {
             %Param,
             ItemID => $Param{ItemID},
-            Comment      => $Attachment{Filename},
+            Number => $Param{Number},
+            Comment => $Attachment{Filename},
+            Filename => $Attachment{Filename},
             HistoryType  => 'AttachmentDelete',
         },
         UserID => $Param{UserID},
