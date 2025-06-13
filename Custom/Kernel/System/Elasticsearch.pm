@@ -963,40 +963,6 @@ sub FAQCreate {
 
     return if !$Result->{Success};
 
-    # update the attachments
-    if (
-        $ConfigObject->Get('Elasticsearch::FAQSearchFields')
-        &&
-        $ConfigObject->Get('Elasticsearch::FAQSearchFields')->{'Attachments'}
-        )
-    {
-        my $FAQObject = $Kernel::OM->Get('Kernel::System::FAQ');
-
-        my @AttachmentIndex = $FAQObject->AttachmentIndex(
-            ItemID => $Param{ItemID},
-            UserID => $Param{UserID}
-        );
-
-        for my $AttachmentEntry (@AttachmentIndex) {
-            my %Attachment = $FAQObject->AttachmentGet(
-                ItemID => $Param{ItemID},
-                FileID => $AttachmentEntry->{FileID},
-                UserID => $Param{UserID},
-            );
-
-            $Result = $RequesterObject->Run(
-                WebserviceID => $Self->{WebserviceID},
-                Invoker      => 'FAQManagement',
-                Asynchronous => 0,
-                Data         => {
-                    %Attachment,
-                    Event  => 'FAQAttachmentAddPost',
-                    ItemID => $Param{ItemID},
-                }
-            );
-        }
-    }
-
     return 1;
 
 }
