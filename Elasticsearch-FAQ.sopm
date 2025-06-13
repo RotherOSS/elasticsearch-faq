@@ -16,11 +16,27 @@
         <File Permission="660" Location="Custom/Kernel/System/FAQ.pm" />
         <File Permission="660" Location="Kernel/Config/Files/XML/FAQElasticsearch.xml" />        
         <File Permission="660" Location="Kernel/GenericInterface/Invoker/Elasticsearch/FAQManagement.pm" />        
+        <File Permission="660" Location="var/packagesetup/ElasticsearchFAQ.pm" />
     </Filelist>
-    <IntroInstall Type="post" Title="Convert legacy reference fields" Lang="en"><![CDATA[
+    <IntroInstall Type="post" Title="Initial FAQ items indexation" Lang="en"><![CDATA[
 
         <br/>
         If you are using Elasticsearch, please execute the console command "Maint::Elasticsearch::Migration --target f"<br/>
 
     ]]></IntroInstall>
+    <CodeInstall Type="post"><![CDATA[
+
+        # create the package name
+        my $CodeModule = 'var::packagesetup::ElasticsearchFAQ';
+
+        $Kernel::OM->Get($CodeModule)->CodeInstall();
+    ]]></CodeInstall>
+    <CodeUninstall Type="pre"><![CDATA[
+
+        # create the package name
+        my $CodeModule = 'var::packagesetup::ElasticsearchFAQ';
+
+        $Kernel::OM->Get($CodeModule)->CodeUninstall();
+    ]]></CodeUninstall>
+
 </otobo_package>
