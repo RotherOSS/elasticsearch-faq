@@ -9,7 +9,7 @@ Overview
 ========
 Summary
 -------
-This package enhances the OTOBO FAQ Package enhanced with Elasticsearch indexing and searching capabilities.
+This package enhances the OTOBO FAQ Package with Elasticsearch capabilities.
 
 Configuration
 =============
@@ -30,7 +30,7 @@ Not applicable
 
 Basic Configuration
 -------------------
-Open the Package Manager module from the Administration group in the Agent Interface. Select the package named *ITSMConfigItemMultitenancy* from the Online Repository. Click the associated  *Install* link on that line and respond affirmatively to any confirmation questions that may follow.
+Open the Package Manager module from the Administration group in the Agent Interface. Select the package named *Elasticsearch-FAQ* from the Online Repository. Click the associated  *Install* link on that line and respond affirmatively to any confirmation questions that may follow.
 
 Execute the console command *Maint::Elasticsearch::Migration --target f*
 
@@ -43,35 +43,42 @@ Configuration Reference
 Core::Elasticsearch::Settings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Elasticsearch::ConfigItemStoreFields
+Elasticsearch::FAQSearchFields
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Fields stored in the configuration item index which are used for other things besides fulltext searches. For the complete functionality all fields are mandatory.
+Fields of the faq index, used for the fulltext search. Fields are also stored, but are not mandatory for the overall functionality. Inclusion of attachments can be disabled by setting the entry to 0 or deleting it.
 
-Core::Event::ITSMConfigItem
+Elasticsearch::QuickSearchShow###FAQ
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Objects to search for, how many entries and which attributs to show. FAQ attributes have to explicitly be stored via Elasticsearch.
+
+Elasticsearch::IndexSettings###FAQ
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Number of shards (NS), replicas (NR) and fields limit for the index 'faq'.
+
+Elasticsearch::FAQStoreFields
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Fields stored in the faq index which are used for other things besides fulltext searches. For the complete functionality all fields are mandatory.
+
+Core::Event::FAQ
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-ITSMConfigItem::EventModulePost###100-History
+FAQ::EventModulePost###9800-GenericInterface
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Config item event module that enables logging to history in the agent interface.
-
-Core::GeneralCatalog
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-ITSMConfigItemManagementGroup
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Management group that exempts from any config item level group restrictions.
-
-GeneralCatalogPreferences###ConfigitemGroup
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Mode for config item level group restrictions.
+Performs the configured action for each event (as an Invoker) for each configured Webservice.
 
 Frontend::Admin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Events###ITSMConfigItem
+Events###FAQ
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 List of all Package events to be displayed in the GUI.
 
+GenericInterface::Invoker::ModuleRegistration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+GenericInterface::Invoker::Module###Elasticsearch::FAQManagement
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+GenericInterface module registration for the invoker layer.
 
 About
 =======
