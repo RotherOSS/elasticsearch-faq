@@ -31,6 +31,7 @@ our @ObjectDependencies = (
     'Kernel::System::CustomerGroup',
     'Kernel::System::CustomerUser',
     'Kernel::System::DynamicField',
+    'Kernel::System::FAQ',
     'Kernel::System::GenericInterface::Webservice',
     'Kernel::System::Group',
     'Kernel::System::Log',
@@ -998,25 +999,25 @@ sub FAQSearch {
     }
 
     # set up category filter corresponding to the access rights
-    my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
+    my $GroupObject    = $Kernel::OM->Get('Kernel::System::Group');
     my %AuthGroupsList = $GroupObject->PermissionUserGet(
         UserID => $Param{UserID},
         Type   => "ro",
     );
     my %AuthGroupsMap = map { $_ => 1 } keys %AuthGroupsList;
 
-    my $FAQObject = $Kernel::OM->Get('Kernel::System::FAQ');
+    my $FAQObject         = $Kernel::OM->Get('Kernel::System::FAQ');
     my $AllCategoryGroups = $FAQObject->CategoryGroupGetAll(
         UserID => $Param{UserID},
     );
 
     my @AuthCategoryList;
     CATEGORY:
-    for my $CategoryID (keys $AllCategoryGroups->%*) {
-        for my $GroupID (keys $AllCategoryGroups->{$CategoryID}->%*) {
-            if ($AuthGroupsMap{$GroupID}) {
+    for my $CategoryID ( keys $AllCategoryGroups->%* ) {
+        for my $GroupID ( keys $AllCategoryGroups->{$CategoryID}->%* ) {
+            if ( $AuthGroupsMap{$GroupID} ) {
                 push @AuthCategoryList, $CategoryID;
-                next CATEGORY;  # It suffices that one user group is authorized into the category
+                next CATEGORY;    # It suffices that one user group is authorized into the category
             }
         }
     }

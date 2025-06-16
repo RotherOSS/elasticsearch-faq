@@ -370,7 +370,7 @@ sub PrepareRequest {
     ITEMFIELD:
     for my $ItemField (qw(Field1 Field2 Field3 Field4 Field5 Field6)) {
         next ITEMFIELD if !$FAQ{$ItemField};
-        $FAQ{$ItemField} = $Kernel::OM->Get('Kernel::System::HTMLUtils')->ToAscii( 
+        $FAQ{$ItemField} = $Kernel::OM->Get('Kernel::System::HTMLUtils')->ToAscii(
             String => $FAQ{$ItemField},
         );
     }
@@ -412,22 +412,22 @@ sub PrepareRequest {
         # enforce file requirements (size, format, etc.)
         # create a temporary index to "ingest" the attachment
         my $RequesterObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
-        my $Result = $RequesterObject->Run(
+        my $Result          = $RequesterObject->Run(
             WebserviceID => $Self->{WebserviceID},
             Invoker      => 'FAQIngestAttachment',
             Asynchronous => 0,
             Data         => {
-                ItemID => $Param{Data}{ItemID},
+                ItemID      => $Param{Data}{ItemID},
                 Filename    => $Attachment{Filename},
                 ContentType => $Attachment{ContentType},
                 Content     => $Attachment{Content},
                 Filesize    => $Attachment{Filesize},
-                Event => 'PutTMPAttachment',
+                Event       => 'PutTMPAttachment',
             },
         );
-        if ($Result && $Result->{Data}) {
+        if ( $Result && $Result->{Data} ) {
             push @Attachments, {
-                Content => $Attachment{Content},
+                Content  => $Attachment{Content},
                 Filename => $Attachment{Filename},
             };
         }

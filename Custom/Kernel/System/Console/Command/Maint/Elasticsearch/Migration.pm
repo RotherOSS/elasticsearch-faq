@@ -799,11 +799,12 @@ sub MigrateFAQs {
         $Count++;
 
         # create the FAQ in Elasticsearch
-        if ( !$Param{ESObject}->FAQCreate(
-                    ItemID => $ItemID,
-                    UserID => 1,
-                )
-           )
+        if (
+            !$Param{ESObject}->FAQCreate(
+                ItemID => $ItemID,
+                UserID => 1,
+            )
+            )
         {
             $Errors++;
         }

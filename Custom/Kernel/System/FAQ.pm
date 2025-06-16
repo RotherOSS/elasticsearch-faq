@@ -342,8 +342,8 @@ sub FAQGet {
         # get valid list
         my %ValidList = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
         $Data{Valid} = $ValidList{ $Data{ValidID} };
-# FAQ Service
 
+# FAQ Service
         # get related services
         my $ServicesRelated = $Self->FAQServiceGet(
             ItemID => $Param{ItemID},
@@ -806,8 +806,8 @@ sub FAQUpdate {
     if ( !defined $Param{ValidID} ) {
         $Param{ValidID} = $FAQData{ValidID};
     }
-# FAQ Services
 
+# FAQ Services
     my $ServicesInDB = $Self->FAQServiceGet(
         ItemID => $Param{ItemID},
     );
@@ -876,7 +876,7 @@ sub FAQUpdate {
         Event => 'FAQUpdate',
         Data  => {
             ItemID  => $Param{ItemID},
-            Comment => $Param{ItemID} . '%%' . $Param{Title}, # TODO: To be replaced by Number, need to find out why Number is undef
+            Comment => $Param{ItemID} . '%%' . $Param{Title},    # TODO: To be replaced by Number, need to find out why Number is undef
         },
         UserID => $Param{UserID},
     );
@@ -1173,11 +1173,11 @@ sub AttachmentDelete {
         Event => 'FAQAttachmentDeletePost',
         Data  => {
             %Param,
-            ItemID => $Param{ItemID},
-            Number => $Param{Number},
-            Comment => $Attachment{Filename},
-            Filename => $Attachment{Filename},
-            HistoryType  => 'AttachmentDelete',
+            ItemID      => $Param{ItemID},
+            Number      => $Param{Number},
+            Comment     => $Attachment{Filename},
+            Filename    => $Attachment{Filename},
+            HistoryType => 'AttachmentDelete',
         },
         UserID => $Param{UserID},
     );
@@ -1472,6 +1472,7 @@ sub FAQDelete {
         ItemID => $Param{ItemID},
         UserID => $Param{UserID},
     );
+
 # FAQ Service
 
     # delete all related services
@@ -1510,6 +1511,7 @@ sub FAQDelete {
 
     return 1;
 }
+
 # FAQ Service
 
 =head2 FAQServiceAdd()
@@ -2169,6 +2171,7 @@ sub FAQKeywordArticleList {
         OrderByDirection => ['Down'],
         Limit            => $SearchLimit,
         UserID           => 1,
+
 # FAQ Service TODO
         ServiceID => $Param{ServiceID},
 # eo FAQ Service
