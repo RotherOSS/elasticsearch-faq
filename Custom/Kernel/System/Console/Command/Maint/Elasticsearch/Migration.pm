@@ -35,7 +35,9 @@ our @ObjectDependencies = (
     'Kernel::System::CustomerCompany',
     'Kernel::System::CustomerUser',
     'Kernel::System::Elasticsearch',
+# Rother OSS / Elasticsearch-FAQ
     'Kernel::System::FAQ',
+# EO Elasticsearch-FAQ
     'Kernel::System::GenericInterface::Webservice',
     'Kernel::System::Ticket',
     'Kernel::System::Ticket::Article',
@@ -57,10 +59,16 @@ sub Configure {
     $Self->AddOption(
         Name        => 'target',
         Description =>
+# Rother OSS / Elasticsearch-FAQ
+#            "Specify which objects will be migrated. t: Tickets; u: CustomerUsers; c: CustomerCompanies; i: ITSMConfigItems; f: FAQs;If not specified, 'tuci' (all four) will be handled.",
             "Specify which objects will be migrated. t: Tickets; u: CustomerUsers; c: CustomerCompanies; i: ITSMConfigItems; f: FAQs;If not specified, 'tucif' (all five) will be handled.",
+# EO Elasticsearch-FAQ
         Required   => 0,
         HasValue   => 1,
+# Rother OSS / Elasticsearch-FAQ
+#        ValueRegex => qr/^[tuci]+$/smx,
         ValueRegex => qr/^[tucif]+$/smx,
+# EO Elasticsearch-FAQ
     );
     $Self->AddOption(
         Name        => 'micro-sleep',
@@ -135,11 +143,17 @@ sub Run {
         return 0;
     }
 
+# Rother OSS / Elasticsearch-FAQ
+#    my $Targets            = $Self->GetOption('target') || 'tuci';
     my $Targets            = $Self->GetOption('target') || 'tucif';
+# EO Elasticsearch-FAQ
     my $MicroSleep         = $Self->GetOption('micro-sleep');
     my $CustomerLimitLevel = $Self->GetOption('use-customer-batches') || '0';
 
+# Rother OSS / Elasticsearch-FAQ
+#    if ( $Targets =~ m/t|i/ ) {
     if ( $Targets =~ m/t|i|f/ ) {
+# EO Elasticsearch-FAQ
         $Self->CreateAttachmentPipeline(
             ESObject => $ESObject,
         );
@@ -181,7 +195,7 @@ sub Run {
             Sleep    => $MicroSleep,
         );
     }
-
+# Rother OSS / Elasticsearch-FAQ
     if ( $Targets =~ /f/ ) {
         $Self->MigrateFAQs(
             ESObject => $ESObject,
@@ -191,7 +205,7 @@ sub Run {
             UserID   => 1,
         );
     }
-
+# EO Elasticsearch-FAQ
     return $Self->ExitCodeOk();
 }
 
@@ -716,7 +730,7 @@ sub MigrateConfigItems {
 
     return 1;
 }
-
+# Rother OSS / Elasticsearch-FAQ
 sub MigrateFAQs {
     my ( $Self, %Param ) = @_;
 
@@ -829,5 +843,6 @@ sub MigrateFAQs {
 
     return 1;
 }
+# EO Elasticsearch-FAQ
 
 1;

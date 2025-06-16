@@ -114,8 +114,10 @@ sub Run {
         }
 
         # get objects
+# Rother OSS / Elasticsearch-FAQ
+#        my ( @TicketIDs, @CustomerKeys, @CustomerUserKeys, @ConfigItems, @FAQs );
         my ( @TicketIDs, @CustomerKeys, @CustomerUserKeys, @ConfigItems, @FAQs );
-
+# EO Elasticsearch-FAQ
         if ( $SearchObjects->{Ticket} && $SearchObjects->{Ticket}{Count} && $Permission{AgentTicketZoom} ) {
 
             # Search ticket by ES sort by age. Show $Size results (default to 10 in SysConfig)
@@ -161,7 +163,7 @@ sub Run {
                 UserID   => $Self->{UserID},
             );
         }
-
+# Rother OSS / Elasticsearch-FAQ
         if ( $SearchObjects->{FAQ} && $SearchObjects->{FAQ}{Count} )
         {
             # Search FAQ by ES.
@@ -172,7 +174,7 @@ sub Run {
                 UserID   => $Self->{UserID},
             );
         }
-
+# EO Elasticsearch-FAQ
         # Start to fill the blockdata for the template
         if (@TicketIDs) {
             my $QueueObject = $Kernel::OM->Get('Kernel::System::Queue');
@@ -339,7 +341,7 @@ sub Run {
                 }
             }
         }
-
+# Rother OSS / Elasticsearch-FAQ
         if (@FAQs) {
             for my $Attr ( @{ $SearchObjects->{FAQ}{Attributes} } ) {
                 $LayoutObject->Block(
@@ -373,7 +375,7 @@ sub Run {
                 }
             }
         }
-
+# EO Elasticsearch-FAQ
         # Create output
         my $Output = $LayoutObject->Output(
             TemplateFile => 'AgentElasticsearchQuickResult',
@@ -383,7 +385,9 @@ sub Run {
                 Companies     => scalar @CustomerKeys,
                 CustomerUsers => scalar @CustomerUserKeys,
                 ConfigItems   => scalar @ConfigItems,
+# Rother OSS / Elasticsearch-FAQ
                 FAQs          => scalar @FAQs,
+# EO Elasticsearch-FAQ
             }
         );
 

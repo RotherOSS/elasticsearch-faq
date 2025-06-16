@@ -877,17 +877,6 @@ sub ConfigItemCreate {
     );
     return if !$Result->{Success};
 
-    # update the version
-    $Result = $RequesterObject->Run(
-        WebserviceID => $Self->{WebserviceID},
-        Invoker      => 'ConfigItemManagement',
-        Asynchronous => 0,
-        Data         => {
-            Event        => 'VersionCreate',
-            ConfigItemID => $Param{ConfigItemID},
-        }
-    );
-
     # update the attachments
     if (
         $ConfigObject->Get('Elasticsearch::ConfigItemSearchFields')
@@ -923,6 +912,7 @@ sub ConfigItemCreate {
     return 1;
 
 }
+# Rother OSS / Elasticsearch-FAQ
 
 =head2 FAQCreate()
 
@@ -1101,6 +1091,7 @@ sub FAQSearch {
     }
 
 }
+# EO Elasticsearch-FAQ
 
 =head2 TestConnection()
 
