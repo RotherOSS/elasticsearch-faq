@@ -21,7 +21,7 @@
     <IntroInstall Type="post" Title="Initial FAQ items indexation" Lang="en"><![CDATA[
 
         <br/>
-        If you are using Elasticsearch, please execute the console command "Maint::Elasticsearch::Migration --target f"<br/>
+        Please execute the console command "bin/otobo.Console.pl Maint::Elasticsearch::Migration --target f"<br/>
 
     ]]></IntroInstall>
     <CodeInstall Type="post"><![CDATA[

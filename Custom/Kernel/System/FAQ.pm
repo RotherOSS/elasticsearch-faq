@@ -879,7 +879,7 @@ sub FAQUpdate {
         Event => 'FAQUpdate',
         Data  => {
             ItemID  => $Param{ItemID},
-            Comment => $Param{ItemID} . '%%' . $Param{Title},    # TODO: To be replaced by Number, need to find out why Number is undef
+            Comment => $Param{ItemID} . '%%' . $FAQData{Number},
         },
         UserID => $Param{UserID},
     );
