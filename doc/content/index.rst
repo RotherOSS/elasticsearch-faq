@@ -96,11 +96,3 @@ Contact
 Version
 -------
 Author: |doc-vendor| / Version: |doc-version| / Date of release: |doc-datestamp|
-
-    <Setting Name="Elasticsearch::DelayToCleanTmpAttachments" Required="0" Valid="1">
-        <Description Translatable="1">Milliseconds to wait before purging the tmpattachment index from the temporary attachments after a create/update FAQ operation.</Description>
-        <Navigation>Core::Elasticsearch::Settings</Navigation>
-        <Value>
-            <Item ValueType="String" ValueRegex="^\d+$">1000</Item>
-        </Value>
-    </Setting>
