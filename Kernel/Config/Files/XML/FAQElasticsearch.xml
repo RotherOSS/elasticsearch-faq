@@ -21,6 +21,7 @@
                         <Item>CategoryID</Item>
                         <Item>Number</Item>
                         <Item>Title</Item>
+                        <Item>StateID</Item>
                     </Array>
                 </Item>
                 <Item Key="DynamicField">

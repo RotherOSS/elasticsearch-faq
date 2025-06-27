@@ -50,8 +50,6 @@ Quicksearch result is updated via AJAX.
 
 =cut
 
-use Data::Dumper;
-
 sub Run {
     my ( $Self, %Param ) = @_;
 
@@ -69,10 +67,75 @@ sub Run {
 
     # Subaction eq SearchUpdate is returned by on click and on input events of the ESfulltext-field. See Core.UI.Elasticsearch.js
     if ( $Self->{Subaction} eq 'SearchUpdate' && $ESStrLength > 1 && $Count ) {
-        my $url = $ParamObject->GetParam(
+# Rother OSS / Elasticsearch-FAQ
+#        # Add filter for customer company if the company tickets are not disabled.
+#        my %Selection;
+#        if ( !$DisableCompanyTickets ) {
+#            my %AccessibleCustomers = $Kernel::OM->Get('Kernel::System::CustomerGroup')->GroupContextCustomers(
+#                CustomerUserID => $Self->{UserID},
+#            );
+#            $Selection{CustomerIDRaw} = [ keys %AccessibleCustomers ];
+#        }
+#        else {
+#            $Selection{CustomerUserLoginRaw} = $Self->{UserID};
+#        }
+#
+#        # Search ticket by ES sort by age. Show $Size results.
+#        my @TicketIDs = $ESObject->TicketSearch(
+#            %Selection,
+#            Fulltext       => $ParamObject->GetParam( Param => 'FulltextES' ),
+#            CustomerUserID => $Self->{UserID},
+#            Limit          => $Count,
+#            Permission     => 'ro',
+#            Result         => 'FULL',
+#        );
+#
+#        # Block ticket data
+#        for my $Ticket (@TicketIDs) {
+#
+#            # we only have one key and one value in each array element
+#            my ( $TicketID, $TicketParam ) = ( %{$Ticket} );
+#
+#            $LayoutObject->Block(
+#                Name => 'Record',
+#                Data => {
+#                    TicketID => $TicketID,
+#                },
+#            );
+#
+#            my $Age = $LayoutObject->CustomerAge(
+#                Age   => $TicketParam->{Age},
+#                Space => ' ',
+#            );
+#
+#            $LayoutObject->Block(
+#                Name => 'RecordTicketAge',
+#                Data => {
+#                    TicketID  => $TicketID,
+#                    TicketAge => $Age,
+#                },
+#            );
+#
+#            $LayoutObject->Block(
+#                Name => 'RecordTicketNumber',
+#                Data => {
+#                    TicketID     => $TicketID,
+#                    TicketNumber => $TicketParam->{TicketNumber},
+#                },
+#            );
+#            $LayoutObject->Block(
+#                Name => 'RecordTicketTitle',
+#                Data => {
+#                    TicketID    => $TicketID,
+#                    TicketTitle => $TicketParam->{Title},
+#                },
+#            );
+#        }
+        my $Url = $ParamObject->GetParam(
             Param => 'URL'
         );
-        if ( $url =~ /CustomerTicketOverview/ ) {
+        if ( $Url =~ /CustomerTicketOverview/ ) {
+
             # Add filter for customer company if the company tickets are not disabled.
             my %Selection;
             if ( !$DisableCompanyTickets ) {
@@ -96,6 +159,9 @@ sub Run {
             );
 
             # Block ticket data
+            $LayoutObject->Block(
+                Name => 'TicketHeader',
+            );
             for my $Ticket (@TicketIDs) {
 
                 # we only have one key and one value in each array element
@@ -137,23 +203,46 @@ sub Run {
                 );
             }
         }
-        elsif ( $url =~ /CustomerFAQExplorer/ ) {
+        elsif ( $Url =~ /CustomerFAQExplorer/ ) {
 
             # Search FAQ by ES sort by Number. Show $Size results.
-            print STDERR "\n";
-            print STDERR $ParamObject->GetParam( Param => 'FulltextES' );
-            print STDERR "\n";
             my @FAQIDs = $ESObject->FAQSearch(
-                Fulltext       => $ParamObject->GetParam( Param => 'FulltextES' ),
-                #UserID => $Self->{UserID},
-                UserID => 1,
-                Limit          => $Count,
-                Result         => 'FULL',
+                Fulltext => $ParamObject->GetParam( Param => 'FulltextES' ),
+                UserID   => 1,
+                Limit    => $Count,
+                Result   => 'FULL',
+                Customer => 1,
             );
+            $LayoutObject->Block(
+                Name => 'FAQHeader',
+            );
+            for my $FAQ (@FAQIDs) {
+                my ( $FAQID, $FAQParam ) = ( %{$FAQ} );
 
-            print STDERR Dumper \@FAQIDs;
+                $LayoutObject->Block(
+                    Name => 'FAQRecord',
+                    Data => {
+                        FAQID => $FAQID,
+                    },
+                );
 
+                $LayoutObject->Block(
+                    Name => 'RecordFAQNumber',
+                    Data => {
+                        FAQID     => $FAQID,
+                        FAQNumber => $FAQParam->{Number},
+                    },
+                );
+                $LayoutObject->Block(
+                    Name => 'RecordFAQTitle',
+                    Data => {
+                        FAQID    => $FAQID,
+                        FAQTitle => $FAQParam->{Title},
+                    },
+                );
+            }
         }
+# EO Elasticsearch-FAQ
 
         # Create output
         my $Output = $LayoutObject->Output(

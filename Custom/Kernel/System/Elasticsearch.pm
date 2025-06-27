@@ -912,6 +912,7 @@ sub ConfigItemCreate {
     return 1;
 
 }
+
 # Rother OSS / Elasticsearch-FAQ
 
 =head2 FAQCreate()
@@ -1014,18 +1015,50 @@ sub FAQSearch {
 
     my ( @Musts, @Filters );
 
-    push @Filters, {
-        bool => {
-            filter => [
-                {
-                    terms => {
-                        CategoryID => \@AuthCategoryList,
-                    }
-                },
-            ]
-        }
-    };
-
+# Rother OSS / Elasticsearch-FAQ
+#	push @Filters, {
+#		bool => {
+#		filter => [
+#			{
+#				terms => {
+#					CategoryID => \@AuthCategoryList,
+#				}
+#			},
+#		]
+#	    }
+#	};
+    if ( $Param{Customer} ) {
+        push @Filters, {
+            bool => {
+                filter => [
+                    {
+                        terms => {
+                            CategoryID => \@AuthCategoryList,
+                        }
+                    },
+                    {
+                        terms => {
+                            StateID => [ 1, 3 ],
+                        }
+                    },
+                ]
+            }
+        };
+    }
+    else {
+        push @Filters, {
+            bool => {
+                filter => [
+                    {
+                        terms => {
+                            CategoryID => \@AuthCategoryList,
+                        }
+                    },
+                ]
+            }
+        };
+    }
+# EO Elasticsearch-FAQ
     if ( defined $Param{Fulltext} ) {
 
         my $FulltextFields = $ConfigObject->Get('Elasticsearch::FAQSearchFields') // {};
@@ -1091,6 +1124,7 @@ sub FAQSearch {
     }
 
 }
+
 # EO Elasticsearch-FAQ
 
 =head2 TestConnection()
