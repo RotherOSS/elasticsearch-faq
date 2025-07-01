@@ -420,68 +420,8 @@ sub PrepareRequest {
         ( map { $_ => $FAQ{$_} } keys %DataToStore ),
     );
 
-    my @AttachmentIndex = $FAQObject->AttachmentIndex(
-        ItemID => $Param{Data}{ItemID},
-        UserID => 1
-    );
-    my @Attachments;
-    my @TmpAttachmentIDs;
-    for my $AttachmentEntry (@AttachmentIndex) {
-        my %Attachment = $FAQObject->AttachmentGet(
-            ItemID => $Param{Data}{ItemID},
-            FileID => $AttachmentEntry->{FileID},
-            UserID => 1,
-        );
-
-        # enforce file requirements (size, format, etc.)
-        # create a temporary index to "ingest" the attachment
-        my $RequesterObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
-        my $Result          = $RequesterObject->Run(
-            WebserviceID => $Self->{WebserviceID},
-            Invoker      => 'FAQIngestAttachment',
-            Asynchronous => 0,
-            Data         => {
-                ItemID      => $Param{Data}{ItemID},
-                Filename    => $Attachment{Filename},
-                ContentType => $Attachment{ContentType},
-                Content     => $Attachment{Content},
-                Filesize    => $Attachment{Filesize},
-                Event       => 'PutTMPAttachment',
-            },
-        );
-        if ( $Result && $Result->{Data} ) {
-            push @TmpAttachmentIDs, $Result->{Data}{_id};
-            push @Attachments, {
-                Content  => $Attachment{Content},
-                Filename => $Attachment{Filename},
-            };
-        }
-    }
-    $Content{Attachments} = \@Attachments;
-
-    # if there were attachments to process, purge them from the temporary index
-    if (@Attachments) {
-
-        # a forced delay may be necessary, looks like some synchronization problems prevent the tmp attachments from being deleted
-        my $Milliseconds = $ConfigObject->Get('Elasticsearch::DelayToCleanTmpAttachments');
-        if ($Milliseconds) {
-            Time::HiRes::usleep( $Milliseconds * 1000 );
-        }
-
-        my $RequesterObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
-        $RequesterObject->Run(
-            WebserviceID => $Self->{WebserviceID},
-            Invoker      => 'FAQIngestAttachment',
-            Asynchronous => 0,
-            Data         => {
-                TmpAttachmentIDs => \@TmpAttachmentIDs,
-                Event            => 'CleanTmpAttachments',
-                ItemID           => $Param{Data}{ItemID},
-            },
-        );
-    }
-
     if ( $API eq '_update' ) {
+        delete $Content{Attachments};
 
         return {
             Success => 1,
@@ -493,6 +433,7 @@ sub PrepareRequest {
         };
     }
     else {
+        $Content{Attachments} = [];
 
         return {
             Success => 1,

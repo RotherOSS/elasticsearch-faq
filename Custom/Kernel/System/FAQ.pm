@@ -1059,10 +1059,19 @@ sub AttachmentAdd {
     while ( my @Row = $DBObject->FetchrowArray() ) {
         $AttachmentID = $Row[0];
     }
-# Rother OSS / Elasticsearch-FAQ
-    # the FAQAttachmentAddPost-Event should not be triggered
-    # instead, the FAQUpdate event reloads the attachments to the ES
-# EO Elasticsearch-FAQ
+
+    # trigger AttachmentAdd-Event
+    $Self->EventHandler(
+        Event => 'FAQAttachmentAddPost',
+        Data  => {
+            %Param,
+            ItemID => $Param{ItemID},
+            Comment      => $Param{Filename},
+            HistoryType  => 'AttachmentAdd',
+        },
+        UserID => $Param{UserID},
+    );
+
     return $AttachmentID;
 }
 
