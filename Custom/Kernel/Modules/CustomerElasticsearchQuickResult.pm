@@ -131,10 +131,80 @@ sub Run {
 #                },
 #            );
 #        }
+#        # Create output
+#        my $Output = $LayoutObject->Output(
+#            TemplateFile => 'CustomerElasticsearchQuickResult',
+#            Data         => \%Param,
+#        );
+#
+#        #Return HTML-output back to callback function in Core.UI.Elasticsearch.js
+#        return $LayoutObject->Attachment(
+#            NoCache     => 1,
+#            ContentType => 'text/html',
+#            Charset     => $LayoutObject->{UserCharset},
+#            Content     => $Output || '',
+#            Type        => 'inline',
+#        );
         my $Url = $ParamObject->GetParam(
             Param => 'URL'
         );
-        if ( $Url =~ /CustomerTicketOverview/ ) {
+        if ( $Url =~ /CustomerFAQExplorer/ ) {
+
+            # Search FAQ by ES sort by Number. Show $Size results.
+            my @FAQIDs = $ESObject->FAQSearch(
+                Fulltext => $ParamObject->GetParam( Param => 'FulltextES' ),
+                #UserID => $Self->{UserID}, # TEMPORARY
+                UserID   => 1,
+                Limit    => $Count,
+                Result   => 'FULL',
+                Customer => 1,
+            );
+            $LayoutObject->Block(
+                Name => 'FAQHeader',
+            );
+            for my $FAQ (@FAQIDs) {
+                my ( $FAQID, $FAQParam ) = ( %{$FAQ} );
+
+                $LayoutObject->Block(
+                    Name => 'FAQRecord',
+                    Data => {
+                        FAQID => $FAQID,
+                    },
+                );
+
+                $LayoutObject->Block(
+                    Name => 'RecordFAQNumber',
+                    Data => {
+                        FAQID     => $FAQID,
+                        FAQNumber => $FAQParam->{Number},
+                    },
+                );
+                $LayoutObject->Block(
+                    Name => 'RecordFAQTitle',
+                    Data => {
+                        FAQID    => $FAQID,
+                        FAQTitle => $FAQParam->{Title},
+                    },
+                );
+            }
+
+            # Create output
+            my $Output = $LayoutObject->Output(
+                TemplateFile => 'CustomerElasticsearchQuickResult',
+                Data         => \%Param,
+            );
+
+            #Return HTML-output back to callback function in Core.UI.Elasticsearch.js
+            return $LayoutObject->Attachment(
+                NoCache     => 1,
+                ContentType => 'text/html',
+                Charset     => $LayoutObject->{UserCharset},
+                Content     => $Output || '',
+                Type        => 'inline',
+            );
+
+        }
+        else {
 
             # Add filter for customer company if the company tickets are not disabled.
             my %Selection;
@@ -202,63 +272,24 @@ sub Run {
                     },
                 );
             }
-        }
-        elsif ( $Url =~ /CustomerFAQExplorer/ ) {
 
-            # Search FAQ by ES sort by Number. Show $Size results.
-            my @FAQIDs = $ESObject->FAQSearch(
-                Fulltext => $ParamObject->GetParam( Param => 'FulltextES' ),
-                UserID   => 1,
-                Limit    => $Count,
-                Result   => 'FULL',
-                Customer => 1,
+            # Create output
+            my $Output = $LayoutObject->Output(
+                TemplateFile => 'CustomerElasticsearchQuickResult',
+                Data         => \%Param,
             );
-            $LayoutObject->Block(
-                Name => 'FAQHeader',
+
+            #Return HTML-output back to callback function in Core.UI.Elasticsearch.js
+            return $LayoutObject->Attachment(
+                NoCache     => 1,
+                ContentType => 'text/html',
+                Charset     => $LayoutObject->{UserCharset},
+                Content     => $Output || '',
+                Type        => 'inline',
             );
-            for my $FAQ (@FAQIDs) {
-                my ( $FAQID, $FAQParam ) = ( %{$FAQ} );
 
-                $LayoutObject->Block(
-                    Name => 'FAQRecord',
-                    Data => {
-                        FAQID => $FAQID,
-                    },
-                );
-
-                $LayoutObject->Block(
-                    Name => 'RecordFAQNumber',
-                    Data => {
-                        FAQID     => $FAQID,
-                        FAQNumber => $FAQParam->{Number},
-                    },
-                );
-                $LayoutObject->Block(
-                    Name => 'RecordFAQTitle',
-                    Data => {
-                        FAQID    => $FAQID,
-                        FAQTitle => $FAQParam->{Title},
-                    },
-                );
-            }
         }
 # EO Elasticsearch-FAQ
-
-        # Create output
-        my $Output = $LayoutObject->Output(
-            TemplateFile => 'CustomerElasticsearchQuickResult',
-            Data         => \%Param,
-        );
-
-        #Return HTML-output back to callback function in Core.UI.Elasticsearch.js
-        return $LayoutObject->Attachment(
-            NoCache     => 1,
-            ContentType => 'text/html',
-            Charset     => $LayoutObject->{UserCharset},
-            Content     => $Output || '',
-            Type        => 'inline',
-        );
-
     }
 
     return $LayoutObject->Attachment(

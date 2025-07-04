@@ -702,7 +702,6 @@ sub FAQAdd {
         Event => 'FAQCreate',
         Data  => {
             ItemID  => $ID,
-            Comment => $ID . '%%' . $Number,
         },
         UserID => $Param{UserID},
     );
@@ -879,7 +878,6 @@ sub FAQUpdate {
         Event => 'FAQUpdate',
         Data  => {
             ItemID  => $Param{ItemID},
-            Comment => $Param{ItemID} . '%%' . $FAQData{Number},
         },
         UserID => $Param{UserID},
     );
@@ -1060,17 +1058,16 @@ sub AttachmentAdd {
         $AttachmentID = $Row[0];
     }
 
+# Rother OSS / Elasticsearch-FAQ
     # trigger AttachmentAdd-Event
     $Self->EventHandler(
         Event => 'FAQAttachmentAddPost',
         Data  => {
-            %Param,
             ItemID => $Param{ItemID},
-            Comment      => $Param{Filename},
-            HistoryType  => 'AttachmentAdd',
         },
         UserID => $Param{UserID},
     );
+# EO Elasticsearch-FAQ
 
     return $AttachmentID;
 }
@@ -1185,12 +1182,9 @@ sub AttachmentDelete {
     $Self->EventHandler(
         Event => 'FAQAttachmentDeletePost',
         Data  => {
-            %Param,
             ItemID      => $Param{ItemID},
             Number      => $Param{Number},
-            Comment     => $Attachment{Filename},
             Filename    => $Attachment{Filename},
-            HistoryType => 'AttachmentDelete',
         },
         UserID => $Param{UserID},
     );
@@ -1517,7 +1511,6 @@ sub FAQDelete {
         Event => 'FAQDelete',
         Data  => {
             ItemID  => $Param{ItemID},
-            Comment => $Param{ItemID} . '%%' . $Param{Number},
         },
         UserID => $Param{UserID},
     );

@@ -20,6 +20,7 @@
         <input type="hidden" name="Subaction" value="Redirect"/>
         <table class="TableSmall NoCellspacing">
             <thead>
+# RotherOSS / Elasticsearch-FAQ
 [% RenderBlockStart("TicketHeader") %]
                 <tr>
                     <th class="OverviewHeader TicketNumber">
@@ -37,7 +38,7 @@
 [% RenderBlockStart("FAQHeader") %]
                 <tr>
                     <th class="OverviewHeader FAQNumber">
-                        <a name="OverviewControl"  title="FAQNumber">FAQ#</a>
+                        <a name="OverviewControl"  title="FAQNumber">[% Translate("FAQ#") | html  %]</a>
                     </th>
                     <th class="OverviewHeader FAQTitle">
                         <a name="OverviewControl"  title="FAQTitle">[% Translate("Title") | html  %]</a>

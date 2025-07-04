@@ -113,27 +113,6 @@ sub PrepareRequest {
 
     # handle all events which are neither update nor creation first
 
-    # purge attachments in the temporary index
-    if ( $Param{Data}{Event} eq 'CleanTmpAttachments' ) {
-
-        my %Content = (
-            query => {
-                terms => {
-                    _id => $Param{Data}{TmpAttachmentIDs},
-                }
-            }
-        );
-
-        return {
-            Success => 1,
-            Data    => {
-                docapi => '_delete_by_query',
-                id     => '',
-                %Content,
-            },
-        };
-    }
-
     # delete the FAQ item
     if ( $Param{Data}{Event} eq 'FAQDelete' ) {
         my %Content = (

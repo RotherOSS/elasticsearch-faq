@@ -106,7 +106,9 @@ Core.UI.Elasticsearch = (function (TargetNS) {
                 Action: Action,
                 Subaction: 'SearchUpdate',
                 FulltextES: FulltextESValue,
+// Rother OSS / Elasticsearch-FAQ
                 URL: window.location.href,
+// EO Elasticsearch-FAQ
             };
 
         // initiate the AJAX call

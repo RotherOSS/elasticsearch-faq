@@ -32,7 +32,7 @@ Basic Configuration
 -------------------
 Open the Package Manager module from the Administration group in the Agent Interface. Select the package named *Elasticsearch-FAQ* from the Online Repository. Click the associated  *Install* link on that line and respond affirmatively to any confirmation questions that may follow.
 
-Execute the console command *Maint::Elasticsearch::Migration --target f*
+Execute the console command *bin/otobo.Console.pl Maint::Elasticsearch::Migration --target f*
 
 Custom Configuration and Advanced Features
 ------------------------------------------
@@ -58,10 +58,6 @@ Number of shards (NS), replicas (NR) and fields limit for the index 'faq'.
 Elasticsearch::FAQStoreFields
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Fields stored in the faq index which are used for other things besides fulltext searches. For the complete functionality all fields are mandatory.
-
-Elasticsearch::DelayToCleanTmpAttachments
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Milliseconds to wait before purging the tmpattachment index from the temporary attachments after a create/update FAQ operation.
 
 Core::Event::FAQ
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
