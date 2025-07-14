@@ -912,7 +912,6 @@ sub ConfigItemCreate {
     return 1;
 
 }
-
 # Rother OSS / Elasticsearch-FAQ
 
 =head2 FAQCreate()
@@ -955,6 +954,40 @@ sub FAQCreate {
 
     return if !$Result->{Success};
 
+    # update the attachments
+    if (
+        $ConfigObject->Get('Elasticsearch::FAQSearchFields')
+        &&
+        $ConfigObject->Get('Elasticsearch::FAQSearchFields')->{'Attachments'}
+        )
+    {
+        my $FAQObject = $Kernel::OM->Get('Kernel::System::FAQ');
+
+        my @AttachmentIndex = $FAQObject->AttachmentIndex(
+            ItemID => $Param{ItemID},
+            UserID => $Param{UserID}
+        );
+
+        for my $AttachmentEntry (@AttachmentIndex) {
+            my %Attachment = $FAQObject->AttachmentGet(
+                ItemID => $Param{ItemID},
+                FileID => $AttachmentEntry->{FileID},
+                UserID => $Param{UserID},
+            );
+
+            $Result = $RequesterObject->Run(
+                WebserviceID => $Self->{WebserviceID},
+                Invoker      => 'FAQManagement',
+                Asynchronous => 0,
+                Data         => {
+                    %Attachment,
+                    Event  => 'FAQAttachmentAddPost',
+                    ItemID => $Param{ItemID},
+                }
+            );
+        }
+    }
+ 
     return 1;
 
 }
@@ -1014,7 +1047,6 @@ sub FAQSearch {
     }
 
     my ( @Musts, @Filters );
-
 # Rother OSS / Elasticsearch-FAQ
 #	push @Filters, {
 #		bool => {
@@ -1028,6 +1060,11 @@ sub FAQSearch {
 #	    }
 #	};
     if ( $Param{Customer} ) {
+        my $InterfaceStates = $FAQObject->StateTypeList(
+            Types  => $ConfigObject->Get('FAQ::Customer::StateTypes'),
+            #UserID => $Self->{UserID},
+            UserID => 1,
+        );
         push @Filters, {
             bool => {
                 filter => [
@@ -1038,7 +1075,7 @@ sub FAQSearch {
                     },
                     {
                         terms => {
-                            StateID => [ 1, 3 ],
+                            StateTypeID => [keys $InterfaceStates->%*],
                         }
                     },
                 ]
@@ -1062,9 +1099,32 @@ sub FAQSearch {
     if ( defined $Param{Fulltext} ) {
 
         my $FulltextFields = $ConfigObject->Get('Elasticsearch::FAQSearchFields') // {};
-        my @SearchFields   = (
-            @{ $FulltextFields->{Basic} // [] },
-        );
+
+# Rother OSS / FAQ-Elasticsearch
+#        my @SearchFields   = (
+#            @{ $FulltextFields->{Basic} // [] },
+#        );
+        my @SearchFields;
+        if ($Param{Customer}) {
+            my @CandidateFields = @{ $FulltextFields->{Basic} // [] };
+            for my $Field (@CandidateFields) {
+                if ($Field =~ /(Field\d)/) {
+                    my $FieldState = $ConfigObject->Get( 'FAQ::Item::' . $1 )->{Show};
+                    if ($FieldState =~ /^public|external$/) {
+                        push @SearchFields, $Field;
+                    }
+                }
+                else {
+                    push @SearchFields, $Field;
+                }
+            }
+        }
+        else {
+            my @SearchFields   = (
+                @{ $FulltextFields->{Basic} // [] },
+            );
+        }
+# EO Elasticsearch-FAQ
 
         if ( $FulltextFields->{Attachments} ) {
             push @SearchFields, ( 'Attachments.Content', 'Attachments.Filename' );
@@ -1124,7 +1184,6 @@ sub FAQSearch {
     }
 
 }
-
 # EO Elasticsearch-FAQ
 
 =head2 TestConnection()
