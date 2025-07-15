@@ -69,7 +69,7 @@ sub Run {
         # check module permissions to determine whether results can be shown
         my %Permission;
         MODULE:
-        for my $Module (qw/AgentTicketZoom AdminCustomerCompany AdminCustomerUser AgentITSMConfigItemZoom/) {
+        for my $Module (qw/AgentTicketZoom AdminCustomerCompany AdminCustomerUser AgentITSMConfigItemZoom AgentFAQZoom/) {
             my $ModuleReg = $ConfigObject->Get('Frontend::Module')->{$Module};
 
             # module is not configured
@@ -115,7 +115,7 @@ sub Run {
 
         # get objects
 # Rother OSS / Elasticsearch-FAQ
-#        my ( @TicketIDs, @CustomerKeys, @CustomerUserKeys, @ConfigItems, @FAQs );
+#        my ( @TicketIDs, @CustomerKeys, @CustomerUserKeys, @ConfigItems );
         my ( @TicketIDs, @CustomerKeys, @CustomerUserKeys, @ConfigItems, @FAQs );
 # EO Elasticsearch-FAQ
         if ( $SearchObjects->{Ticket} && $SearchObjects->{Ticket}{Count} && $Permission{AgentTicketZoom} ) {
@@ -164,7 +164,7 @@ sub Run {
             );
         }
 # Rother OSS / Elasticsearch-FAQ
-        if ( $SearchObjects->{FAQ} && $SearchObjects->{FAQ}{Count} )
+        if ( $SearchObjects->{FAQ} && $SearchObjects->{FAQ}{Count} && $Permission{AgentFAQZoom} )
         {
             # Search FAQ by ES.
             @FAQs = $ESObject->FAQSearch(
@@ -175,6 +175,7 @@ sub Run {
             );
         }
 # EO Elasticsearch-FAQ
+
         # Start to fill the blockdata for the template
         if (@TicketIDs) {
             my $QueueObject = $Kernel::OM->Get('Kernel::System::Queue');
@@ -376,6 +377,7 @@ sub Run {
             }
         }
 # EO Elasticsearch-FAQ
+
         # Create output
         my $Output = $LayoutObject->Output(
             TemplateFile => 'AgentElasticsearchQuickResult',
