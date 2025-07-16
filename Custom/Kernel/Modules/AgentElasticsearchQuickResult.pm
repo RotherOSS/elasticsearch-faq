@@ -169,7 +169,7 @@ sub Run {
             # Search FAQ by ES.
             @FAQs = $ESObject->FAQSearch(
                 Fulltext => $ParamObject->GetParam( Param => 'FulltextES' ),
-                Limit    => $SearchObjects->{ConfigItem}{Count},
+                Limit    => $SearchObjects->{FAQ}{Count},
                 Result   => 'FULL',
                 UserID   => $Self->{UserID},
             );

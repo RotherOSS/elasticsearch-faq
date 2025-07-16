@@ -912,6 +912,7 @@ sub ConfigItemCreate {
     return 1;
 
 }
+
 # Rother OSS / Elasticsearch-FAQ
 
 =head2 FAQCreate()
@@ -987,7 +988,7 @@ sub FAQCreate {
             );
         }
     }
- 
+
     return 1;
 
 }
@@ -1023,59 +1024,66 @@ sub FAQSearch {
     }
 
     # set up category filter corresponding to the access rights
-    my $GroupObject    = $Kernel::OM->Get('Kernel::System::Group');
-    my %AuthGroupsList = $GroupObject->PermissionUserGet(
-        UserID => $Param{UserID},
-        Type   => "ro",
-    );
-    my %AuthGroupsMap = map { $_ => 1 } keys %AuthGroupsList;
+    my $FAQObject = $Kernel::OM->Get('Kernel::System::FAQ');
 
-    my $FAQObject         = $Kernel::OM->Get('Kernel::System::FAQ');
-    my $AllCategoryGroups = $FAQObject->CategoryGroupGetAll(
-        UserID => $Param{UserID},
-    );
+    my $CategoryGroupHashRef;
+    if ( $Param{UserLogin} ) {
+        if ( $ConfigObject->Get('CustomerGroupSupport') ) {
+            $CategoryGroupHashRef = $FAQObject->GetCustomerCategories(
+                Type         => 'ro',
+                UserID       => $Param{UserID},
+                CustomerUser => $Param{UserLogin},
+            );
+        }
+        else {
+            $CategoryGroupHashRef = $FAQObject->CategoryList(
+                UserID => $Param{UserID}
+            );
+        }
+    }
+    else {
+        $CategoryGroupHashRef = $FAQObject->GetUserCategories(
+            Type   => 'ro',
+            UserID => $Param{UserID},
+        );
+    }
 
-    my @AuthCategoryList;
-    CATEGORY:
-    for my $CategoryID ( keys $AllCategoryGroups->%* ) {
-        for my $GroupID ( keys $AllCategoryGroups->{$CategoryID}->%* ) {
-            if ( $AuthGroupsMap{$GroupID} ) {
-                push @AuthCategoryList, $CategoryID;
-                next CATEGORY;    # It suffices that one user group is authorized into the category
+    # For more details about the code below, please see CustomerFAQSearch:500 ff
+    my %AllowedCategoryIDs = ();
+    if ( $CategoryGroupHashRef && ref $CategoryGroupHashRef eq 'HASH' ) {
+        for my $Level ( sort keys %{$CategoryGroupHashRef} ) {
+            if ( $CategoryGroupHashRef->{$Level} && ref $CategoryGroupHashRef->{$Level} eq 'HASH' ) {
+                my %TempIDs = map { $_ => 1 } keys %{ $CategoryGroupHashRef->{$Level} };
+                %AllowedCategoryIDs = (
+                    %AllowedCategoryIDs,
+                    %TempIDs
+                );
             }
         }
     }
+    my @CategoryIDs = ();
+    if (%AllowedCategoryIDs) {
+        @CategoryIDs = keys %AllowedCategoryIDs;
+    }
 
     my ( @Musts, @Filters );
-# Rother OSS / Elasticsearch-FAQ
-#	push @Filters, {
-#		bool => {
-#		filter => [
-#			{
-#				terms => {
-#					CategoryID => \@AuthCategoryList,
-#				}
-#			},
-#		]
-#	    }
-#	};
-    if ( $Param{Customer} ) {
+
+    if ( $Param{UserLogin} ) {
         my $InterfaceStates = $FAQObject->StateTypeList(
             Types  => $ConfigObject->Get('FAQ::Customer::StateTypes'),
-            #UserID => $Self->{UserID},
-            UserID => 1,
+            UserID => $Param{UserID},
         );
         push @Filters, {
             bool => {
                 filter => [
                     {
                         terms => {
-                            CategoryID => \@AuthCategoryList,
+                            CategoryID => \@CategoryIDs,
                         }
                     },
                     {
                         terms => {
-                            StateTypeID => [keys $InterfaceStates->%*],
+                            StateTypeID => [ keys $InterfaceStates->%* ],
                         }
                     },
                 ]
@@ -1088,29 +1096,25 @@ sub FAQSearch {
                 filter => [
                     {
                         terms => {
-                            CategoryID => \@AuthCategoryList,
+                            CategoryID => \@CategoryIDs,
                         }
                     },
                 ]
             }
         };
     }
-# EO Elasticsearch-FAQ
+
     if ( defined $Param{Fulltext} ) {
 
         my $FulltextFields = $ConfigObject->Get('Elasticsearch::FAQSearchFields') // {};
 
-# Rother OSS / FAQ-Elasticsearch
-#        my @SearchFields   = (
-#            @{ $FulltextFields->{Basic} // [] },
-#        );
         my @SearchFields;
-        if ($Param{Customer}) {
+        if ( $Param{UserLogin} ) {
             my @CandidateFields = @{ $FulltextFields->{Basic} // [] };
             for my $Field (@CandidateFields) {
-                if ($Field =~ /(Field\d)/) {
+                if ( $Field =~ /(Field\d)/ ) {
                     my $FieldState = $ConfigObject->Get( 'FAQ::Item::' . $1 )->{Show};
-                    if ($FieldState =~ /^public|external$/) {
+                    if ( $FieldState =~ /^public|external$/ ) {
                         push @SearchFields, $Field;
                     }
                 }
@@ -1120,11 +1124,10 @@ sub FAQSearch {
             }
         }
         else {
-            my @SearchFields   = (
+            @SearchFields = (
                 @{ $FulltextFields->{Basic} // [] },
             );
         }
-# EO Elasticsearch-FAQ
 
         if ( $FulltextFields->{Attachments} ) {
             push @SearchFields, ( 'Attachments.Content', 'Attachments.Filename' );
@@ -1184,6 +1187,7 @@ sub FAQSearch {
     }
 
 }
+
 # EO Elasticsearch-FAQ
 
 =head2 TestConnection()

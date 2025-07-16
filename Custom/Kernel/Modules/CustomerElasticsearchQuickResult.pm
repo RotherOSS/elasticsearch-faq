@@ -67,6 +67,7 @@ sub Run {
 
     # Subaction eq SearchUpdate is returned by on click and on input events of the ESfulltext-field. See Core.UI.Elasticsearch.js
     if ( $Self->{Subaction} eq 'SearchUpdate' && $ESStrLength > 1 && $Count ) {
+
 # Rother OSS / Elasticsearch-FAQ
 #        # Add filter for customer company if the company tickets are not disabled.
 #        my %Selection;
@@ -152,12 +153,11 @@ sub Run {
 
             # Search FAQ by ES sort by Number. Show $Size results.
             my @FAQIDs = $ESObject->FAQSearch(
-                Fulltext => $ParamObject->GetParam( Param => 'FulltextES' ),
-                #UserID => $Self->{UserID}, # TEMPORARY
-                UserID   => 1,
-                Limit    => $Count,
-                Result   => 'FULL',
-                Customer => 1,
+                Fulltext  => $ParamObject->GetParam( Param => 'FulltextES' ),
+                UserID    => $Self->{UserID},
+                UserLogin => $Self->{UserLogin},
+                Limit     => $Count,
+                Result    => 'FULL',
             );
             $LayoutObject->Block(
                 Name => 'FAQHeader',
@@ -289,6 +289,7 @@ sub Run {
             );
 
         }
+
 # EO Elasticsearch-FAQ
     }
 
