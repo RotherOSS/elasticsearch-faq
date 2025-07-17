@@ -149,7 +149,7 @@ sub Run {
         my $Url = $ParamObject->GetParam(
             Param => 'URL'
         );
-        if ( $Url =~ /CustomerFAQExplorer/ ) {
+        if ( $Url =~ /^CustomerFAQ/ ) {
 
             # Search FAQ by ES sort by Number. Show $Size results.
             my @FAQIDs = $ESObject->FAQSearch(
@@ -204,93 +204,91 @@ sub Run {
             );
 
         }
-        else {
+# EO Elasticsearch-FAQ
 
-            # Add filter for customer company if the company tickets are not disabled.
-            my %Selection;
-            if ( !$DisableCompanyTickets ) {
-                my %AccessibleCustomers = $Kernel::OM->Get('Kernel::System::CustomerGroup')->GroupContextCustomers(
-                    CustomerUserID => $Self->{UserID},
-                );
-                $Selection{CustomerIDRaw} = [ keys %AccessibleCustomers ];
-            }
-            else {
-                $Selection{CustomerUserLoginRaw} = $Self->{UserID};
-            }
-
-            # Search ticket by ES sort by age. Show $Size results.
-            my @TicketIDs = $ESObject->TicketSearch(
-                %Selection,
-                Fulltext       => $ParamObject->GetParam( Param => 'FulltextES' ),
+        # Add filter for customer company if the company tickets are not disabled.
+        my %Selection;
+        if ( !$DisableCompanyTickets ) {
+            my %AccessibleCustomers = $Kernel::OM->Get('Kernel::System::CustomerGroup')->GroupContextCustomers(
                 CustomerUserID => $Self->{UserID},
-                Limit          => $Count,
-                Permission     => 'ro',
-                Result         => 'FULL',
             );
-
-            # Block ticket data
-            $LayoutObject->Block(
-                Name => 'TicketHeader',
-            );
-            for my $Ticket (@TicketIDs) {
-
-                # we only have one key and one value in each array element
-                my ( $TicketID, $TicketParam ) = ( %{$Ticket} );
-
-                $LayoutObject->Block(
-                    Name => 'Record',
-                    Data => {
-                        TicketID => $TicketID,
-                    },
-                );
-
-                my $Age = $LayoutObject->CustomerAge(
-                    Age   => $TicketParam->{Age},
-                    Space => ' ',
-                );
-
-                $LayoutObject->Block(
-                    Name => 'RecordTicketAge',
-                    Data => {
-                        TicketID  => $TicketID,
-                        TicketAge => $Age,
-                    },
-                );
-
-                $LayoutObject->Block(
-                    Name => 'RecordTicketNumber',
-                    Data => {
-                        TicketID     => $TicketID,
-                        TicketNumber => $TicketParam->{TicketNumber},
-                    },
-                );
-                $LayoutObject->Block(
-                    Name => 'RecordTicketTitle',
-                    Data => {
-                        TicketID    => $TicketID,
-                        TicketTitle => $TicketParam->{Title},
-                    },
-                );
-            }
-
-            # Create output
-            my $Output = $LayoutObject->Output(
-                TemplateFile => 'CustomerElasticsearchQuickResult',
-                Data         => \%Param,
-            );
-
-            #Return HTML-output back to callback function in Core.UI.Elasticsearch.js
-            return $LayoutObject->Attachment(
-                NoCache     => 1,
-                ContentType => 'text/html',
-                Charset     => $LayoutObject->{UserCharset},
-                Content     => $Output || '',
-                Type        => 'inline',
-            );
-
+            $Selection{CustomerIDRaw} = [ keys %AccessibleCustomers ];
+        }
+        else {
+            $Selection{CustomerUserLoginRaw} = $Self->{UserID};
         }
 
+        # Search ticket by ES sort by age. Show $Size results.
+        my @TicketIDs = $ESObject->TicketSearch(
+            %Selection,
+            Fulltext       => $ParamObject->GetParam( Param => 'FulltextES' ),
+            CustomerUserID => $Self->{UserID},
+            Limit          => $Count,
+            Permission     => 'ro',
+            Result         => 'FULL',
+        );
+
+        # Block ticket data
+# Rother OSS / Elasticsearch-FAQ
+        $LayoutObject->Block(
+            Name => 'TicketHeader',
+        );
 # EO Elasticsearch-FAQ
+        for my $Ticket (@TicketIDs) {
+
+            # we only have one key and one value in each array element
+            my ( $TicketID, $TicketParam ) = ( %{$Ticket} );
+
+            $LayoutObject->Block(
+                Name => 'Record',
+                Data => {
+                    TicketID => $TicketID,
+                },
+            );
+
+            my $Age = $LayoutObject->CustomerAge(
+                Age   => $TicketParam->{Age},
+                Space => ' ',
+            );
+
+            $LayoutObject->Block(
+                Name => 'RecordTicketAge',
+                Data => {
+                    TicketID  => $TicketID,
+                    TicketAge => $Age,
+                },
+            );
+
+            $LayoutObject->Block(
+                Name => 'RecordTicketNumber',
+                Data => {
+                    TicketID     => $TicketID,
+                    TicketNumber => $TicketParam->{TicketNumber},
+                },
+            );
+            $LayoutObject->Block(
+                Name => 'RecordTicketTitle',
+                Data => {
+                    TicketID    => $TicketID,
+                    TicketTitle => $TicketParam->{Title},
+                },
+            );
+        }
+
+        # Create output
+        my $Output = $LayoutObject->Output(
+            TemplateFile => 'CustomerElasticsearchQuickResult',
+            Data         => \%Param,
+        );
+
+        #Return HTML-output back to callback function in Core.UI.Elasticsearch.js
+        return $LayoutObject->Attachment(
+            NoCache     => 1,
+            ContentType => 'text/html',
+            Charset     => $LayoutObject->{UserCharset},
+            Content     => $Output || '',
+            Type        => 'inline',
+        );
     }
 
     return $LayoutObject->Attachment(

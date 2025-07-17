@@ -41,7 +41,10 @@ Core.Customer.Search = (function (TargetNS) {
             $('#oooSearch').focus();
 
             // TODO: include FAQ to ES
+// Rother OSS - Elasticsearch-FAQ
+//            if (Core.Config.Get('ESActive') == 1 && Core.Config.Get('Action') !== 'CustomerFAQExplorer' && Core.Config.Get('Action') !== 'CustomerFAQZoom'){
             if (Core.Config.Get('ESActive') == 1){
+// EO Elasticsearch-FAQ
                 Core.UI.Elasticsearch.InitSearchField($('#oooSearch'), "CustomerElasticsearchQuickResult");
             }
 

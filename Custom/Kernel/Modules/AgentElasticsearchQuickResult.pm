@@ -69,7 +69,10 @@ sub Run {
         # check module permissions to determine whether results can be shown
         my %Permission;
         MODULE:
+# Rother OSS / Elasticsearch-FAQ
+#        for my $Module (qw/AgentTicketZoom AdminCustomerCompany AdminCustomerUser AgentITSMConfigItemZoom/) {
         for my $Module (qw/AgentTicketZoom AdminCustomerCompany AdminCustomerUser AgentITSMConfigItemZoom AgentFAQZoom/) {
+# EO Elasticsearch-FAQ
             my $ModuleReg = $ConfigObject->Get('Frontend::Module')->{$Module};
 
             # module is not configured
@@ -155,7 +158,7 @@ sub Run {
 
         if ( $SearchObjects->{ConfigItem} && $SearchObjects->{ConfigItem}{Count} && $Permission{AgentITSMConfigItemZoom} )
         {
-            # Search config item by ES.
+            # Search customer user by ES.
             @ConfigItems = $ESObject->ConfigItemSearch(
                 Fulltext => $ParamObject->GetParam( Param => 'FulltextES' ),
                 Limit    => $SearchObjects->{ConfigItem}{Count},

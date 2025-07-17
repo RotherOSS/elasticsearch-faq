@@ -22,6 +22,7 @@
             <thead>
 # RotherOSS / Elasticsearch-FAQ
 [% RenderBlockStart("TicketHeader") %]
+# EO Elasticsearch-FAQ
                 <tr>
                     <th class="OverviewHeader TicketNumber">
                         <a name="OverviewControl"  title="TicketNummer">Ticket#</a>
@@ -33,8 +34,8 @@
                         <a name="OverviewControl"  title="TicketTitle">[% Translate("Title") | html  %]</a>
                     </th>
                 </tr>
-[% RenderBlockEnd("TicketHeader") %]
 # RotherOSS / Elasticsearch-FAQ
+[% RenderBlockEnd("TicketHeader") %]
 [% RenderBlockStart("FAQHeader") %]
                 <tr>
                     <th class="OverviewHeader FAQNumber">

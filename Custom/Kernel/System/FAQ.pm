@@ -1078,7 +1078,6 @@ sub AttachmentAdd {
             Content     => $Param{Content},
             Filesize    => $Param{Filesize},
             Inline      => $Param{Inline},
-            UserID      => $Param{UserID},
             ItemID      => $Param{ItemID},
         },
         UserID => $Param{UserID},
