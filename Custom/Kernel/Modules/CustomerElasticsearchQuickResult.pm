@@ -67,12 +67,11 @@ sub Run {
 
     # Subaction eq SearchUpdate is returned by on click and on input events of the ESfulltext-field. See Core.UI.Elasticsearch.js
     if ( $Self->{Subaction} eq 'SearchUpdate' && $ESStrLength > 1 && $Count ) {
-
 # Rother OSS / Elasticsearch-FAQ
         my $Url = $ParamObject->GetParam(
             Param => 'URL'
         );
-        if ( $Url =~ /^CustomerFAQ/ ) {
+        if ( $Url =~ /Action=CustomerFAQ/ ) {
 
             # Search FAQ by ES sort by Number. Show $Size results.
             my @FAQIDs = $ESObject->FAQSearch(
