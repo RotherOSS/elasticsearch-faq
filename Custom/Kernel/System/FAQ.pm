@@ -97,10 +97,11 @@ sub new {
     #     log due to searching undefined setting into ConfigObject.
     $Self->EventHandlerInit(
 
-# Rother OSS / Elasticsearch-FAQ
-#       Config => '',
+        # Rother OSS / Elasticsearch-FAQ
+        #        Config => '',
         Config => 'FAQ::EventModulePost',
-# EO Elasticsearch-FAQ
+
+        # EO Elasticsearch-FAQ
     );
 
     return $Self;
@@ -347,7 +348,7 @@ sub FAQGet {
         my %ValidList = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
         $Data{Valid} = $ValidList{ $Data{ValidID} };
 
-# FAQ Service
+        # FAQ Service
 
         # get related services
         my $ServicesRelated = $Self->FAQServiceGet(
@@ -359,7 +360,7 @@ sub FAQGet {
             }
         }
 
-# eo FAQ Service
+        # eo FAQ Service
 
         # cache result
         $CacheObject->Set(
@@ -700,7 +701,7 @@ sub FAQAdd {
         UserID => $Param{UserID},
     );
 
-# Rother OSS / Elasticsearch-FAQ
+    # Rother OSS / Elasticsearch-FAQ
     # trigger FAQCreate
     $Self->EventHandler(
         Event => 'FAQCreate',
@@ -710,8 +711,8 @@ sub FAQAdd {
         UserID => $Param{UserID},
     );
 
-# EO Elasticsearch-FAQ
-# FAQ Service
+    # EO Elasticsearch-FAQ
+    # FAQ Service
 
     # add services
 
@@ -725,26 +726,42 @@ sub FAQAdd {
         }
     }
 
-# eo FAQ Service
+    # eo FAQ Service
 
     # check if approval feature is enabled
     if ( $ConfigObject->Get('FAQ::ApprovalRequired') && !$Param{Approved} ) {
 
-        # create new approval ticket
-        my $Success = $Self->_FAQApprovalTicketCreate(
-            ItemID     => $ID,
-            CategoryID => $Param{CategoryID},
-            LanguageID => $Param{LanguageID},
-            FAQNumber  => $Number,
-            Title      => $Param{Title},
-            StateID    => $Param{StateID},
-            UserID     => $Param{UserID},
-        );
-        if ( !$Success ) {
-            $LogObject->Log(
-                Priority => 'error',
-                Message  => 'Could not create approval ticket!',
+        my $ApprovalRequired        = 1;
+        my $ApprovalIncludeInternal = $ConfigObject->Get('FAQ::Approval::IncludeInternal');
+
+        if ( !$ApprovalIncludeInternal ) {
+            my %InternalState = $Self->StateList(
+                Types  => ['internal'],
+                UserID => 1,
             );
+
+            if ( $InternalState{ $Param{StateID} } ) {
+                $ApprovalRequired = 0;
+            }
+        }
+
+        # create new approval ticket
+        if ( $ApprovalRequired ) {
+            my $Success = $Self->_FAQApprovalTicketCreate(
+                ItemID     => $ID,
+                CategoryID => $Param{CategoryID},
+                LanguageID => $Param{LanguageID},
+                FAQNumber  => $Number,
+                Title      => $Param{Title},
+                StateID    => $Param{StateID},
+                UserID     => $Param{UserID},
+            );
+            if ( !$Success ) {
+                $LogObject->Log(
+                    Priority => 'error',
+                    Message  => 'Could not create approval ticket!',
+                );
+            }
         }
     }
 
@@ -815,7 +832,7 @@ sub FAQUpdate {
         $Param{ValidID} = $FAQData{ValidID};
     }
 
-# FAQ Services
+    # FAQ Services
 
     my $ServicesInDB = $Self->FAQServiceGet(
         ItemID => $Param{ItemID},
@@ -854,7 +871,7 @@ sub FAQUpdate {
         $Self->_DeleteFromFAQCache(%Param);
     }
 
-# eo FAQ Services
+    # eo FAQ Services
 
     return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
         SQL => '
@@ -881,7 +898,7 @@ sub FAQUpdate {
     # delete cache
     $Self->_DeleteFromFAQCache(%Param);
 
-# Rother OSS / Elasticsearch-FAQ
+    # Rother OSS / Elasticsearch-FAQ
     # trigger FAQUpdate
     $Self->EventHandler(
         Event => 'FAQUpdate',
@@ -891,7 +908,7 @@ sub FAQUpdate {
         UserID => $Param{UserID},
     );
 
-# EO Elasticsearch-FAQ
+    # EO Elasticsearch-FAQ
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     # update approval
@@ -1068,7 +1085,7 @@ sub AttachmentAdd {
         $AttachmentID = $Row[0];
     }
 
-# Rother OSS / Elasticsearch-FAQ
+    # Rother OSS / Elasticsearch-FAQ
     # trigger AttachmentAdd-Event
     $Self->EventHandler(
         Event => 'FAQAttachmentAddPost',
@@ -1083,8 +1100,7 @@ sub AttachmentAdd {
         UserID => $Param{UserID},
     );
 
-# EO Elasticsearch-FAQ
-
+    # EO Elasticsearch-FAQ
     return $AttachmentID;
 }
 
@@ -1182,20 +1198,20 @@ sub AttachmentDelete {
         }
     }
 
-# Rother OSS / Elasticsearch-FAQ
+    # Rother OSS / Elasticsearch-FAQ
     my %Attachment = $Self->AttachmentGet(
         ItemID => $Param{ItemID},
         FileID => $Param{FileID},
         UserID => $Param{UserID},
     );
 
-# EO Elasticsearch-FAQ
+    # EO Elasticsearch-FAQ
     return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
         SQL  => 'DELETE FROM faq_attachment WHERE id = ? AND faq_id = ? ',
         Bind => [ \$Param{FileID}, \$Param{ItemID} ],
     );
 
-# Rother OSS / Elasticsearch-FAQ
+    # Rother OSS / Elasticsearch-FAQ
     # trigger FAQAttachmentDeletePost-Event
     $Self->EventHandler(
         Event => 'FAQAttachmentDeletePost',
@@ -1207,7 +1223,7 @@ sub AttachmentDelete {
         UserID => $Param{UserID},
     );
 
-# EO Elasticsearch-FAQ
+    # EO Elasticsearch-FAQ
 
     return 1;
 }
@@ -1500,7 +1516,7 @@ sub FAQDelete {
         UserID => $Param{UserID},
     );
 
-# FAQ Service
+    # FAQ Service
 
     # delete all related services
     my $ServiceDataArrayRef = $Self->FAQServiceGet(
@@ -1516,7 +1532,7 @@ sub FAQDelete {
         return if !$DeleteSuccess;
     }
 
-# eo FAQ Service
+    # eo FAQ Service
 
     # delete article
     return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
@@ -1527,7 +1543,7 @@ sub FAQDelete {
     # delete cache
     $Self->_DeleteFromFAQCache(%Param);
 
-# Rother OSS / Elasticsearch-FAQ
+    # Rother OSS / Elasticsearch-FAQ
     # trigger FAQDelete
     $Self->EventHandler(
         Event => 'FAQDelete',
@@ -1536,7 +1552,8 @@ sub FAQDelete {
         },
         UserID => $Param{UserID},
     );
-# EO Elasticsearch-FAQ
+
+    # EO Elasticsearch-FAQ
 
     return 1;
 }
@@ -2202,10 +2219,10 @@ sub FAQKeywordArticleList {
         Limit            => $SearchLimit,
         UserID           => 1,
 
-# FAQ Service TODO
+        # FAQ Service TODO
         ServiceID => $Param{ServiceID},
 
-# eo FAQ Service
+        # eo FAQ Service
     );
 
     my %KeywordArticeList;
@@ -2898,21 +2915,37 @@ sub _FAQApprovalUpdate {
             UserID     => $Param{UserID},
         );
 
-        # create new approval ticket
-        my $Success = $Self->_FAQApprovalTicketCreate(
-            ItemID     => $Param{ItemID},
-            CategoryID => $FAQData{CategoryID},
-            LanguageID => $FAQData{LanguageID},
-            FAQNumber  => $FAQData{Number},
-            Title      => $FAQData{Title},
-            StateID    => $FAQData{StateID},
-            UserID     => $Param{UserID},
-        );
-        if ( !$Success ) {
-            $LogObject->Log(
-                Priority => 'error',
-                Message  => 'Could not create approval ticket!',
+        my $ApprovalRequired        = 1;
+        my $ApprovalIncludeInternal = $Kernel::OM->Get('Kernel::Config')->Get('FAQ::Approval::IncludeInternal');
+
+        if ( !$ApprovalIncludeInternal ) {
+            my %InternalState = $Self->StateList(
+                Types  => ['internal'],
+                UserID => 1,
             );
+
+            if ( $InternalState{ $FAQData{StateID} } ) {
+                $ApprovalRequired = 0;
+            }
+        }
+
+        if ( $ApprovalRequired ) {
+            # create new approval ticket
+            my $Success = $Self->_FAQApprovalTicketCreate(
+                ItemID     => $Param{ItemID},
+                CategoryID => $FAQData{CategoryID},
+                LanguageID => $FAQData{LanguageID},
+                FAQNumber  => $FAQData{Number},
+                Title      => $FAQData{Title},
+                StateID    => $FAQData{StateID},
+                UserID     => $Param{UserID},
+            );
+            if ( !$Success ) {
+                $LogObject->Log(
+                    Priority => 'error',
+                    Message  => 'Could not create approval ticket!',
+                );
+            }
         }
     }
 
@@ -2952,23 +2985,6 @@ sub _FAQApprovalTicketCreate {
     my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
-    # Check if faq article state needs approval
-    my $ApprovalStates = $ConfigObject->Get('FAQ::Approval::StateTypes') || [];
-    my %ApprovalStateIDs     = $Self->StateList(
-        Types  => $ApprovalStates,
-        UserID => 1,
-    );   
-
-    my $ApprovalNeeded = 0; 
-    APPSTATE:
-    for my $ApprovalStateID ( sort keys %ApprovalStateIDs ) {
-        if ( $Param{StateID} == $ApprovalStateID ) {
-            $ApprovalNeeded = 1; 
-            last APPSTATE;
-        }    
-    }    
-    return 1 if $ApprovalNeeded != 1;
-
     # get subject
     my $Subject = $ConfigObject->Get('FAQ::ApprovalTicketSubject');
     $Subject =~ s{ <OTOBO_FAQ_NUMBER>     }{$Param{FAQNumber}}xms;
@@ -2977,6 +2993,7 @@ sub _FAQApprovalTicketCreate {
     $Subject =~ s{ <OTOBO_FAQ_TITLE>      }{$Param{Title}}xms;
     $Subject =~ s{ <OTOBO_FAQ_STATEID>    }{$Param{StateID}}xms;
 
+    # check if we can find existing open approval tickets for this FAQ article
     my @TicketIDs = $TicketObject->TicketSearch(
         Result    => 'ARRAY',
         Title     => $Subject,
