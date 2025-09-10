@@ -96,11 +96,9 @@ sub new {
     # currently there are no FAQ event modules but is needed to initialize otherwise errors are
     #     log due to searching undefined setting into ConfigObject.
     $Self->EventHandlerInit(
-
 # Rother OSS / Elasticsearch-FAQ
         #        Config => '',
         Config => 'FAQ::EventModulePost',
-
 # EO Elasticsearch-FAQ
     );
 
@@ -347,8 +345,7 @@ sub FAQGet {
         # get valid list
         my %ValidList = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
         $Data{Valid} = $ValidList{ $Data{ValidID} };
-
-        # FAQ Service
+# FAQ Service
 
         # get related services
         my $ServicesRelated = $Self->FAQServiceGet(
@@ -359,8 +356,7 @@ sub FAQGet {
                 $Data{ServiceList}->{ $Service->{'ServiceID'} } = $Service->{'Name'};
             }
         }
-
-        # eo FAQ Service
+# eo FAQ Service
 
         # cache result
         $CacheObject->Set(
@@ -712,7 +708,7 @@ sub FAQAdd {
 
 # EO Elasticsearch-FAQ
 
-    # FAQ Service
+# FAQ Service
 
     # add services
 
@@ -725,8 +721,7 @@ sub FAQAdd {
             );
         }
     }
-
-    # eo FAQ Service
+# EO FAQ Service
 
     # check if approval feature is enabled
     if ( $ConfigObject->Get('FAQ::ApprovalRequired') && !$Param{Approved} ) {
@@ -831,8 +826,7 @@ sub FAQUpdate {
     if ( !defined $Param{ValidID} ) {
         $Param{ValidID} = $FAQData{ValidID};
     }
-
-    # FAQ Services
+# FAQ Services
 
     my $ServicesInDB = $Self->FAQServiceGet(
         ItemID => $Param{ItemID},
@@ -870,8 +864,7 @@ sub FAQUpdate {
     if ($ServicesChanged) {
         $Self->_DeleteFromFAQCache(%Param);
     }
-
-    # eo FAQ Services
+# eo FAQ Services
 
     return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
         SQL => '
@@ -1208,7 +1201,6 @@ sub AttachmentDelete {
         SQL  => 'DELETE FROM faq_attachment WHERE id = ? AND faq_id = ? ',
         Bind => [ \$Param{FileID}, \$Param{ItemID} ],
     );
-
 # Rother OSS / Elasticsearch-FAQ
     # trigger FAQAttachmentDeletePost-Event
     $Self->EventHandler(
@@ -1513,8 +1505,7 @@ sub FAQDelete {
         ItemID => $Param{ItemID},
         UserID => $Param{UserID},
     );
-
-    # FAQ Service
+# FAQ Service
 
     # delete all related services
     my $ServiceDataArrayRef = $Self->FAQServiceGet(
@@ -1529,8 +1520,7 @@ sub FAQDelete {
 
         return if !$DeleteSuccess;
     }
-
-    # eo FAQ Service
+# eo FAQ Service
 
     # delete article
     return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
@@ -1540,7 +1530,6 @@ sub FAQDelete {
 
     # delete cache
     $Self->_DeleteFromFAQCache(%Param);
-
 # Rother OSS / Elasticsearch-FAQ
     # trigger FAQDelete
     $Self->EventHandler(
@@ -1554,7 +1543,6 @@ sub FAQDelete {
 
     return 1;
 }
-
 # FAQ Service
 
 =head2 FAQServiceAdd()
@@ -1752,7 +1740,6 @@ sub FAQServiceDelete {
 
     return 1;
 }
-
 # eo FAQ Service
 
 =head2 FAQHistoryAdd()
@@ -2215,11 +2202,9 @@ sub FAQKeywordArticleList {
         OrderByDirection => ['Down'],
         Limit            => $SearchLimit,
         UserID           => 1,
-
-        # FAQ Service TODO
+# FAQ Service TODO
         ServiceID => $Param{ServiceID},
-
-        # eo FAQ Service
+# eo FAQ Service
     );
 
     my %KeywordArticeList;
