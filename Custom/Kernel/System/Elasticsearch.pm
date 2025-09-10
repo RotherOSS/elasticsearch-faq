@@ -31,9 +31,6 @@ our @ObjectDependencies = (
     'Kernel::System::CustomerGroup',
     'Kernel::System::CustomerUser',
     'Kernel::System::DynamicField',
-# Rother OSS / Elasticsearch-FAQ
-    'Kernel::System::FAQ',
-# EO Elasticsearch-FAQ
     'Kernel::System::GenericInterface::Webservice',
     'Kernel::System::Group',
     'Kernel::System::Log',
@@ -46,6 +43,9 @@ our @ObjectDependencies = (
 # Soft dependencies are modules that used by this object, but who don't affect the state of this object.
 # There is no need to discard this module when one of the soft dependencies is discarded.
 our @SoftObjectDependencies = (
+# Rother OSS / Elasticsearch-FAQ
+    'Kernel::System::FAQ',
+# EO Elasticsearch-FAQ
     'Kernel::System::GeneralCatalog',
     'Kernel::System::ITSMConfigItem',
 );
