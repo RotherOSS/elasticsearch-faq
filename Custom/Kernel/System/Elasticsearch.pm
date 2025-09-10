@@ -31,7 +31,9 @@ our @ObjectDependencies = (
     'Kernel::System::CustomerGroup',
     'Kernel::System::CustomerUser',
     'Kernel::System::DynamicField',
+# Rother OSS / Elasticsearch-FAQ
     'Kernel::System::FAQ',
+# EO Elasticsearch-FAQ
     'Kernel::System::GenericInterface::Webservice',
     'Kernel::System::Group',
     'Kernel::System::Log',

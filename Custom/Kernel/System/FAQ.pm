@@ -97,11 +97,11 @@ sub new {
     #     log due to searching undefined setting into ConfigObject.
     $Self->EventHandlerInit(
 
-        # Rother OSS / Elasticsearch-FAQ
+# Rother OSS / Elasticsearch-FAQ
         #        Config => '',
         Config => 'FAQ::EventModulePost',
 
-        # EO Elasticsearch-FAQ
+# EO Elasticsearch-FAQ
     );
 
     return $Self;
@@ -700,8 +700,7 @@ sub FAQAdd {
         ItemID => $ID,
         UserID => $Param{UserID},
     );
-
-    # Rother OSS / Elasticsearch-FAQ
+# Rother OSS / Elasticsearch-FAQ
     # trigger FAQCreate
     $Self->EventHandler(
         Event => 'FAQCreate',
@@ -711,7 +710,8 @@ sub FAQAdd {
         UserID => $Param{UserID},
     );
 
-    # EO Elasticsearch-FAQ
+# EO Elasticsearch-FAQ
+
     # FAQ Service
 
     # add services
@@ -898,7 +898,7 @@ sub FAQUpdate {
     # delete cache
     $Self->_DeleteFromFAQCache(%Param);
 
-    # Rother OSS / Elasticsearch-FAQ
+# Rother OSS / Elasticsearch-FAQ
     # trigger FAQUpdate
     $Self->EventHandler(
         Event => 'FAQUpdate',
@@ -908,7 +908,7 @@ sub FAQUpdate {
         UserID => $Param{UserID},
     );
 
-    # EO Elasticsearch-FAQ
+# EO Elasticsearch-FAQ
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     # update approval
@@ -1085,7 +1085,7 @@ sub AttachmentAdd {
         $AttachmentID = $Row[0];
     }
 
-    # Rother OSS / Elasticsearch-FAQ
+# Rother OSS / Elasticsearch-FAQ
     # trigger AttachmentAdd-Event
     $Self->EventHandler(
         Event => 'FAQAttachmentAddPost',
@@ -1099,8 +1099,7 @@ sub AttachmentAdd {
         },
         UserID => $Param{UserID},
     );
-
-    # EO Elasticsearch-FAQ
+# EO Elasticsearch-FAQ
     return $AttachmentID;
 }
 
@@ -1198,20 +1197,19 @@ sub AttachmentDelete {
         }
     }
 
-    # Rother OSS / Elasticsearch-FAQ
+# Rother OSS / Elasticsearch-FAQ
     my %Attachment = $Self->AttachmentGet(
         ItemID => $Param{ItemID},
         FileID => $Param{FileID},
         UserID => $Param{UserID},
     );
-
-    # EO Elasticsearch-FAQ
+# EO Elasticsearch-FAQ
     return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
         SQL  => 'DELETE FROM faq_attachment WHERE id = ? AND faq_id = ? ',
         Bind => [ \$Param{FileID}, \$Param{ItemID} ],
     );
 
-    # Rother OSS / Elasticsearch-FAQ
+# Rother OSS / Elasticsearch-FAQ
     # trigger FAQAttachmentDeletePost-Event
     $Self->EventHandler(
         Event => 'FAQAttachmentDeletePost',
@@ -1223,7 +1221,7 @@ sub AttachmentDelete {
         UserID => $Param{UserID},
     );
 
-    # EO Elasticsearch-FAQ
+# EO Elasticsearch-FAQ
 
     return 1;
 }
@@ -1543,7 +1541,7 @@ sub FAQDelete {
     # delete cache
     $Self->_DeleteFromFAQCache(%Param);
 
-    # Rother OSS / Elasticsearch-FAQ
+# Rother OSS / Elasticsearch-FAQ
     # trigger FAQDelete
     $Self->EventHandler(
         Event => 'FAQDelete',
@@ -1552,8 +1550,7 @@ sub FAQDelete {
         },
         UserID => $Param{UserID},
     );
-
-    # EO Elasticsearch-FAQ
+# EO Elasticsearch-FAQ
 
     return 1;
 }
