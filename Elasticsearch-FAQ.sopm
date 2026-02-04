@@ -8,7 +8,7 @@
     <URL>https://otobo.de/</URL>
     <License>GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</License>
     <Description Lang="en">The OTOBO FAQ Package enhanced with Elasticsearch.</Description>
-    <Filelist>    
+    <Filelist>
         <File Permission="660" Location="Custom/Kernel/Modules/AgentElasticsearchQuickResult.pm" />
         <File Permission="660" Location="Custom/Kernel/Modules/CustomerElasticsearchQuickResult.pm" />
         <File Permission="660" Location="Custom/Kernel/Output/HTML/Templates/Standard/AgentElasticsearchQuickResult.tt" />
@@ -16,8 +16,8 @@
         <File Permission="660" Location="Custom/Kernel/System/Console/Command/Maint/Elasticsearch/Migration.pm" />
         <File Permission="660" Location="Custom/Kernel/System/Elasticsearch.pm" />
         <File Permission="660" Location="Custom/Kernel/System/FAQ.pm" />
-        <File Permission="660" Location="Kernel/Config/Files/XML/FAQElasticsearch.xml" />        
-        <File Permission="660" Location="Kernel/GenericInterface/Invoker/Elasticsearch/FAQManagement.pm" />        
+        <File Permission="660" Location="Kernel/Config/Files/XML/FAQElasticsearch.xml" />
+        <File Permission="660" Location="Kernel/GenericInterface/Invoker/Elasticsearch/FAQManagement.pm" />
         <File Permission="660" Location="var/httpd/htdocs/js/Core.UI.Elasticsearch.js" />
         <File Permission="660" Location="var/httpd/htdocs/js/Core.Customer.Search.js" />
         <File Permission="660" Location="var/packagesetup/ElasticsearchFAQ.pm" />
