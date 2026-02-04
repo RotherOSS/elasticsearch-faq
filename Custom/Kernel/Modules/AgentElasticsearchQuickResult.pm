@@ -2,7 +2,9 @@
 # OTOBO is a web-based ticketing system for service organisations.
 # --
 # Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
-# Copyright (C) 2019-2025 Rother OSS GmbH, https://otobo.io/
+# Copyright (C) 2019-2026 Rother OSS GmbH, https://otobo.io/
+# --
+# $origin: otobo - ff9e297baf287e16071d3ac6ad7f6c13f11ac7fa - Kernel/Modules/AgentElasticsearchQuickResult.pm
 # --
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -81,38 +83,64 @@ sub Run {
                 next MODULE;
             }
 
-            # no restrictions
-            if ( ref $ModuleReg->{GroupRo} eq 'ARRAY' && !scalar @{ $ModuleReg->{GroupRo} } ) {
+            # module permission check
+            if (
+                ref $ModuleReg->{GroupRo} eq 'ARRAY'
+                && !scalar @{ $ModuleReg->{GroupRo} }
+                && ref $ModuleReg->{Group} eq 'ARRAY'
+                && !scalar @{ $ModuleReg->{Group} }
+                )
+            {
                 $Permission{$Module} = 1;
-                next MODULE;
-            }
-
-            next MODULE if !$ModuleReg->{GroupRo};
-
-            if ( ref $ModuleReg->{GroupRo} eq 'ARRAY' ) {
-                INNER:
-                for my $GroupName ( @{ $ModuleReg->{GroupRo} } ) {
-                    next INNER if !$GroupName;
-                    next INNER if !$GroupObject->PermissionCheck(
-                        UserID    => $Self->{UserID},
-                        GroupName => $GroupName,
-                        Type      => 'ro',
-                    );
-
-                    $Permission{$Module} = 1;
-                    next MODULE;
-                }
             }
             else {
-                my $HasPermission = $GroupObject->PermissionCheck(
-                    UserID    => $Self->{UserID},
-                    GroupName => $ModuleReg->{GroupRo},
-                    Type      => 'ro',
+                my $AccessRo;
+                my $AccessRw;
+                my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
 
-                );
-                if ($HasPermission) {
-                    $Permission{$Module} = 1;
+                PERMISSION:
+                for my $Permission (qw(GroupRo Group)) {
+                    my $AccessOk = 0;
+                    my $Group    = $ModuleReg->{$Permission};
+                    next PERMISSION if !$Group;
+                    if ( ref $Group eq 'ARRAY' ) {
+                        INNER:
+                        for my $GroupName ( @{$Group} ) {
+                            next INNER if !$GroupName;
+                            next INNER if !$GroupObject->PermissionCheck(
+                                UserID    => $Self->{UserID},
+                                GroupName => $GroupName,
+                                Type      => $Permission eq 'GroupRo' ? 'ro' : 'rw',
+
+                            );
+                            $AccessOk = 1;
+                            last INNER;
+                        }
+                    }
+                    else {
+                        my $HasPermission = $GroupObject->PermissionCheck(
+                            UserID    => $Self->{UserID},
+                            GroupName => $Group,
+                            Type      => $Permission eq 'GroupRo' ? 'ro' : 'rw',
+
+                        );
+                        if ($HasPermission) {
+                            $AccessOk = 1;
+                        }
+                    }
+                    if ( $Permission eq 'Group' && $AccessOk ) {
+                        $AccessRo = 1;
+                        $AccessRw = 1;
+                    }
+                    elsif ( $Permission eq 'GroupRo' && $AccessOk ) {
+                        $AccessRo = 1;
+                    }
                 }
+                if ( ( !$AccessRo && !$AccessRw ) || ( !$AccessRo && $AccessRw ) ) {
+                    next MODULE;
+                }
+
+                $Permission{$Module} = 1;
             }
         }
 
@@ -135,7 +163,7 @@ sub Run {
         if (
             $SearchObjects->{CustomerCompany}
             && $SearchObjects->{CustomerCompany}{Count}
-            && $Permission{AdminCustomerCompany}
+            && $Permission{AgentCustomerInformationCenter}
             )
         {
             # Search customer by ES.
@@ -146,7 +174,7 @@ sub Run {
             );
         }
 
-        if ( $SearchObjects->{CustomerUser} && $SearchObjects->{CustomerUser}{Count} && $Permission{AdminCustomerUser} )
+        if ( $SearchObjects->{CustomerUser} && $SearchObjects->{CustomerUser}{Count} && $Permission{AgentCustomerUserInformationCenter} )
         {
             # Search customer user by ES.
             @CustomerUserKeys = $ESObject->CustomerUserSearch(

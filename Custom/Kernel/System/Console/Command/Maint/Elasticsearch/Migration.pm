@@ -2,7 +2,9 @@
 # OTOBO is a web-based ticketing system for service organisations.
 # --
 # Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
-# Copyright (C) 2019-2025 Rother OSS GmbH, https://otobo.io/
+# Copyright (C) 2019-2026 Rother OSS GmbH, https://otobo.io/
+# --
+# $origin: otobo - 91773d1c80161b79b809fff77066f01eb04f3e2c - Kernel/System/Console/Command/Maint/Elasticsearch/Migration.pm
 # --
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -389,7 +391,7 @@ sub MigrateCompanies {
     }
 
     if ($Errors) {
-        $Self->Print("<yellow>CustomerCompany transfer complete. $Errors error(s) occured!</yellow>\n");
+        $Self->Print("<yellow>CustomerCompany transfer complete. $Errors error(s) occurred!</yellow>\n");
     }
     else {
         $Self->Print("<green>CustomerCompany transfer complete. Transferred $Count companies.</green>\n");
@@ -508,7 +510,7 @@ sub MigrateCustomerUsers {
     }
 
     if ($Errors) {
-        $Self->Print("<yellow>CustomerUser transfer complete. $Errors error(s) occured!</yellow>\n");
+        $Self->Print("<yellow>CustomerUser transfer complete. $Errors error(s) occurred!</yellow>\n");
     }
     else {
         $Self->Print("<green>CustomerUser transfer complete. Transferred $Count customer users.</green>\n");
@@ -639,7 +641,7 @@ sub MigrateTickets {
     }
 
     if ($Errors) {
-        $Self->Print("<yellow>Ticket transfer complete. $Errors error(s) occured!</yellow>\n");
+        $Self->Print("<yellow>Ticket transfer complete. $Errors error(s) occurred!</yellow>\n");
     }
     else {
         $Self->Print("<green>Ticket transfer complete. Transferred $Count tickets.</green>\n");
@@ -769,7 +771,7 @@ sub MigrateConfigItems {
     }
 
     if ($Errors) {
-        $Self->Print("<yellow>ConfigItem transfer complete. $Errors error(s) occured!</yellow>\n");
+        $Self->Print("<yellow>ConfigItem transfer complete. $Errors error(s) occurred!</yellow>\n");
     }
     else {
         $Self->Print("<green>ConfigItem transfer complete. Transferred $Count config items.</green>\n");

@@ -2,7 +2,9 @@
 // OTOBO is a web-based ticketing system for service organisations.
 // --
 // Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
-// Copyright (C) 2019-2025 Rother OSS GmbH, https://otobo.io/
+// Copyright (C) 2019-2026 Rother OSS GmbH, https://otobo.io/
+// --
+// $origin: otobo - ff9e297baf287e16071d3ac6ad7f6c13f11ac7fa - var/httpd/htdocs/js/Core.UI.Elasticsearch.js
 // --
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU General Public License as published by the Free Software
@@ -101,6 +103,7 @@ Core.UI.Elasticsearch = (function (TargetNS) {
      *      Updates the Elasticsearch quick result dialog.
      */
     function UpdateDialog( $InputField, Action, FulltextESValue ){
+
         var URL = Core.Config.Get('Baselink'),
             Data = {
                 Action: Action,
