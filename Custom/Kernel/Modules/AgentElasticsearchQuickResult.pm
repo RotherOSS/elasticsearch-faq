@@ -72,8 +72,8 @@ sub Run {
         my %Permission;
         MODULE:
 # Rother OSS / Elasticsearch-FAQ
-#        for my $Module (qw/AgentTicketZoom AdminCustomerCompany AdminCustomerUser AgentITSMConfigItemZoom/) {
-        for my $Module (qw/AgentTicketZoom AdminCustomerCompany AdminCustomerUser AgentITSMConfigItemZoom AgentFAQZoom/) {
+#        for my $Module (qw/AgentTicketZoom AgentCustomerInformationCenter AgentCustomerUserInformationCenter AgentITSMConfigItemZoom/) {
+        for my $Module (qw/AgentTicketZoom AgentCustomerInformationCenter AgentCustomerUserInformationCenter AgentITSMConfigItemZoom AgentFAQZoom/) {
 # EO Elasticsearch-FAQ
             my $ModuleReg = $ConfigObject->Get('Frontend::Module')->{$Module};
 
