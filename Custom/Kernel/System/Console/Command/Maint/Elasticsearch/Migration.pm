@@ -4,7 +4,7 @@
 # Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # Copyright (C) 2019-2026 Rother OSS GmbH, https://otobo.io/
 # --
-# $origin: otobo - 91773d1c80161b79b809fff77066f01eb04f3e2c - Kernel/System/Console/Command/Maint/Elasticsearch/Migration.pm
+# $origin: otobo - e6a256a0029054bacc946d27e0dbe508f00e6746 - Kernel/System/Console/Command/Maint/Elasticsearch/Migration.pm
 # --
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -18,14 +18,19 @@
 
 package Kernel::System::Console::Command::Maint::Elasticsearch::Migration;
 
+use v5.24;
 use strict;
 use warnings;
 
+use parent qw(Kernel::System::Console::BaseCommand);
+
+# core modules
 use Time::HiRes();
 
-use Kernel::System::VariableCheck qw(:all);
+# CPAN modules
 
-use parent qw(Kernel::System::Console::BaseCommand);
+# OTOBO modules
+use Kernel::System::VariableCheck qw(:all);
 
 ## nofilter(TidyAll::Plugin::OTOBO::Perl::ForeachToFor)
 
@@ -57,7 +62,7 @@ our @SoftObjectDependencies = (
 sub Configure {
     my ( $Self, %Param ) = @_;
 
-    $Self->Description('Migrate existing tickets, customers and customerusers to Elasticsearch.');
+    $Self->Description('Migrate existing tickets, customers and customer users to Elasticsearch.');
     $Self->AddOption(
         Name        => 'target',
         Description =>
