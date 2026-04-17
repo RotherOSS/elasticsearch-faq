@@ -1,0 +1,189 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019–2026 Rother OSS GmbH, https://otobo.io
+# This file is distributed under the same license as the OTOBO Documentation package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OTOBO Documentation dev\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-17 07:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../content/index.rst:5
+msgid "Contents"
+msgstr ""
+
+#: ../content/index.rst:10
+msgid "Overview"
+msgstr ""
+
+#: ../content/index.rst:12
+msgid "Summary"
+msgstr ""
+
+#: ../content/index.rst:13
+msgid "This package enhances the OTOBO FAQ Package with Elasticsearch capabilities."
+msgstr ""
+
+#: ../content/index.rst:16
+msgid "Configuration"
+msgstr ""
+
+#: ../content/index.rst:19
+msgid "System requirements"
+msgstr ""
+
+#: ../content/index.rst:21
+msgid "Framework"
+msgstr ""
+
+#: ../content/index.rst:22
+msgid "OTOBO 11.0.x"
+msgstr ""
+
+#: ../content/index.rst:25
+msgid "Packages"
+msgstr ""
+
+#: ../content/index.rst:26
+msgid "FAQ 11.0.6"
+msgstr ""
+
+#: ../content/index.rst:29
+msgid "Third-party software"
+msgstr ""
+
+#: ../content/index.rst:30
+msgid "Not applicable"
+msgstr ""
+
+#: ../content/index.rst:33
+msgid "Basic Configuration"
+msgstr ""
+
+#: ../content/index.rst:34
+msgid "Open the Package Manager module from the Administration group in the Agent Interface. Select the package named *Elasticsearch-FAQ* from the Online Repository. Click the associated  *Install* link on that line and respond affirmatively to any confirmation questions that may follow."
+msgstr ""
+
+#: ../content/index.rst:36
+msgid "Execute the console command *bin/otobo.Console.pl Maint::Elasticsearch::Migration --target f*"
+msgstr ""
+
+#: ../content/index.rst:39
+msgid "Custom Configuration and Advanced Features"
+msgstr ""
+
+#: ../content/index.rst:40
+msgid "Through the *Elasticsearch::QuickSearchShow###FAQ* system configuration setting, the QuickSearch frontend feature's table containing the Elasticsearch results can be adjusted in terms of fields, column titles, and the maximum number of items displayed."
+msgstr ""
+
+#: ../content/index.rst:43
+msgid "Configuration Reference"
+msgstr ""
+
+#: ../content/index.rst:45
+msgid "Core::Elasticsearch::Settings"
+msgstr ""
+
+#: ../content/index.rst:48
+msgid "Elasticsearch::FAQSearchFields"
+msgstr ""
+
+#: ../content/index.rst:49
+msgid "Fields of the faq index, used for the fulltext search. Fields are also stored, but are not mandatory for the overall functionality. Inclusion of attachments can be disabled by setting the entry to 0 or deleting it."
+msgstr ""
+
+#: ../content/index.rst:52
+msgid "Elasticsearch::QuickSearchShow###FAQ"
+msgstr ""
+
+#: ../content/index.rst:53
+msgid "Objects to search for, how many entries and which attributs to show. FAQ attributes have to explicitly be stored via Elasticsearch."
+msgstr ""
+
+#: ../content/index.rst:56
+msgid "Elasticsearch::IndexSettings###FAQ"
+msgstr ""
+
+#: ../content/index.rst:57
+msgid "Number of shards (NS), replicas (NR) and fields limit for the index 'faq'."
+msgstr ""
+
+#: ../content/index.rst:60
+msgid "Elasticsearch::FAQStoreFields"
+msgstr ""
+
+#: ../content/index.rst:61
+msgid "Fields stored in the faq index which are used for other things besides fulltext searches. For the complete functionality all fields are mandatory."
+msgstr ""
+
+#: ../content/index.rst:64
+msgid "Core::Event::FAQ"
+msgstr ""
+
+#: ../content/index.rst:67
+msgid "FAQ::EventModulePost###9800-GenericInterface"
+msgstr ""
+
+#: ../content/index.rst:68
+msgid "Performs the configured action for each event (as an Invoker) for each configured Webservice."
+msgstr ""
+
+#: ../content/index.rst:71
+msgid "Frontend::Admin"
+msgstr ""
+
+#: ../content/index.rst:74
+msgid "Events###FAQ"
+msgstr ""
+
+#: ../content/index.rst:75
+msgid "List of all Package events to be displayed in the GUI."
+msgstr ""
+
+#: ../content/index.rst:78
+msgid "GenericInterface::Invoker::ModuleRegistration"
+msgstr ""
+
+#: ../content/index.rst:81
+msgid "GenericInterface::Invoker::Module###Elasticsearch::FAQManagement"
+msgstr ""
+
+#: ../content/index.rst:82
+msgid "GenericInterface module registration for the invoker layer."
+msgstr ""
+
+#: ../content/index.rst:85
+msgid "About"
+msgstr ""
+
+#: ../content/index.rst:88
+msgid "Contact"
+msgstr ""
+
+#: ../content/index.rst:89
+msgid "Rother OSS GmbH"
+msgstr ""
+
+#: ../content/index.rst:90
+msgid "Email: hello@otobo.io"
+msgstr ""
+
+#: ../content/index.rst:91
+msgid "Web: https://otobo.io"
+msgstr ""
+
+#: ../content/index.rst:94
+msgid "Version"
+msgstr ""
+
+#: ../content/index.rst:95
+msgid "Author: |doc-vendor| / Version: |doc-version| / Date of release: |doc-datestamp|"
+msgstr ""
