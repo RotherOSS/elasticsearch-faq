@@ -7,7 +7,8 @@
     <Vendor>Rother OSS GmbH</Vendor>
     <URL>https://otobo.de/</URL>
     <License>GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</License>
-    <Description Lang="en">The OTOBO FAQ Package enhanced with Elasticsearch.</Description>
+    <Description Lang="en">The OTOBO FAQ package enhanced with Elasticsearch.</Description>
+    <Description Lang="hu">Elasticsearch keresővel kiegészített OTOBO GyIK-csomag.</Description>
     <Filelist>
         <File Permission="660" Location="Custom/Kernel/Modules/AgentElasticsearchQuickResult.pm" />
         <File Permission="660" Location="Custom/Kernel/Modules/CustomerElasticsearchQuickResult.pm" />
